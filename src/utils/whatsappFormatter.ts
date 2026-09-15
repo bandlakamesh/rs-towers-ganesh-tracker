@@ -1,6 +1,6 @@
 import type { AppState } from '../types';
 
-export const GITHUB_PAGES_LIVE_URL = 'https://bandlakamesh.github.io/rs-towers-ganesh-tracker/index.html';
+export const GITHUB_PAGES_LIVE_URL = 'https://bandlakamesh.github.io/rs-towers-ganesh-tracker/index.html?v=2';
 
 export const generateWhatsAppBroadcastText = (state: AppState): string => {
   const totalCollected = state.chandaList

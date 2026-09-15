@@ -8,8 +8,22 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>R.S Towers Ganesh Utsav 2026</title>
-    <script type="module" crossorigin src="./assets/index-DQRDy5kw.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-C_PlSXH-.css">
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          for (var registration of registrations) {
+            registration.unregister();
+          }
+        });
+      }
+      if ('caches' in window) {
+        caches.keys().then(function(names) {
+          for (var name of names) caches.delete(name);
+        });
+      }
+    </script>
+    <script type="module" crossorigin src="./assets/index--ATrrAnL.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-C5FZ_3S6.css">
   </head>
   <body>
     <div id="root"></div>
