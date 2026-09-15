@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Share2, Download, Upload, Printer } from 'lucide-react';
+import { Share2, Download, Upload, Printer, Lock, Unlock } from 'lucide-react';
 import type { AppState } from '../types';
 import { exportAppStateJSON, importAppStateJSON } from '../utils/cloudStorage';
 import ganeshaBadge from '../assets/ganesha_badge.png';
@@ -9,6 +9,8 @@ interface NavbarProps {
   onStateUpdate: (newState: AppState) => void;
   onOpenWhatsAppModal: () => void;
   onGoHome?: () => void;
+  isAdmin: boolean;
+  onOpenAdminModal: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -16,6 +18,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onStateUpdate,
   onOpenWhatsAppModal,
   onGoHome,
+  isAdmin,
+  onOpenAdminModal,
 }) => {
   const jsonInputRef = useRef<HTMLInputElement>(null);
 
@@ -97,22 +101,45 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Printer size={16} /> <span className="btn-label-desktop">Print / Download PDF</span>
           </button>
 
-          <button className="app-btn nav-btn-compact" onClick={handleExport} style={{ padding: '8px 12px', fontSize: '0.84rem', background: 'rgba(255, 255, 255, 0.12)', border: '1px solid rgba(255, 255, 255, 0.25)', color: '#E0F2FE' }} title="Download JSON Backup">
-            <Download size={16} />
+          {/* Admin Unlock / Lock Button */}
+          <button
+            className="app-btn nav-btn-compact"
+            onClick={onOpenAdminModal}
+            style={{
+              background: isAdmin ? 'linear-gradient(135deg, #10B981 0%, #059669 100%)' : 'rgba(255, 255, 255, 0.15)',
+              border: isAdmin ? '1px solid #34D399' : '1px solid rgba(255, 255, 255, 0.3)',
+              color: '#FFFFFF',
+              padding: '8px 14px',
+              fontSize: '0.84rem',
+              boxShadow: isAdmin ? '0 4px 14px rgba(16, 185, 129, 0.35)' : 'none'
+            }}
+            title={isAdmin ? "Admin Mode Active (Click to Manage)" : "Unlock Admin Mode"}
+          >
+            {isAdmin ? <Unlock size={16} /> : <Lock size={16} />}
+            <span className="btn-label-desktop">{isAdmin ? 'Admin Active' : 'Admin Unlock'}</span>
           </button>
 
-          <button className="app-btn nav-btn-compact" onClick={() => jsonInputRef.current?.click()} style={{ padding: '8px 12px', fontSize: '0.84rem', background: 'rgba(255, 255, 255, 0.12)', border: '1px solid rgba(255, 255, 255, 0.25)', color: '#E0F2FE' }} title="Restore JSON Backup">
-            <Upload size={16} />
-          </button>
+          {/* Backup & Restore - Visible ONLY to Admin */}
+          {isAdmin && (
+            <>
+              <button className="app-btn nav-btn-compact" onClick={handleExport} style={{ padding: '8px 12px', fontSize: '0.84rem', background: 'rgba(255, 255, 255, 0.15)', border: '1px solid rgba(255, 255, 255, 0.3)', color: '#FFFFFF' }} title="Download JSON Backup">
+                <Download size={16} />
+              </button>
 
-          {/* Hidden File Inputs */}
-          <input
-            type="file"
-            ref={jsonInputRef}
-            onChange={handleJSONFileChange}
-            accept=".json"
-            style={{ display: 'none' }}
-          />
+              <button className="app-btn nav-btn-compact" onClick={() => jsonInputRef.current?.click()} style={{ padding: '8px 12px', fontSize: '0.84rem', background: 'rgba(255, 255, 255, 0.15)', border: '1px solid rgba(255, 255, 255, 0.3)', color: '#FFFFFF' }} title="Restore JSON Backup">
+                <Upload size={16} />
+              </button>
+
+              {/* Hidden File Inputs */}
+              <input
+                type="file"
+                ref={jsonInputRef}
+                onChange={handleJSONFileChange}
+                accept=".json"
+                style={{ display: 'none' }}
+              />
+            </>
+          )}
         </div>
 
       </div>

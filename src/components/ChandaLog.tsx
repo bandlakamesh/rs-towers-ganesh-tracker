@@ -8,6 +8,7 @@ interface ChandaLogProps {
   onAddChanda: (record: Omit<ChandaRecord, 'id' | 'createdAt'>) => void;
   onEditChanda: (record: ChandaRecord) => void;
   onDeleteChanda: (id: string) => void;
+  isAdmin?: boolean;
 }
 
 type SortField = 'receiptNo' | 'flatNo' | 'residentName' | 'amount' | 'paymentMode' | 'date' | 'notes';
@@ -17,6 +18,7 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
   onAddChanda,
   onEditChanda,
   onDeleteChanda,
+  isAdmin = false,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<ChandaRecord | null>(null);
@@ -191,15 +193,17 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
             <option value="NetBanking">NetBanking</option>
           </select>
 
-          <button className="app-btn app-btn-primary action-btn" onClick={handleOpenAdd}>
-            <Plus size={18} /> Record Payment
-          </button>
+          {isAdmin && (
+            <button className="app-btn app-btn-primary action-btn" onClick={handleOpenAdd}>
+              <Plus size={18} /> Record Payment
+            </button>
+          )}
         </div>
       </div>
 
       {/* Chanda Table */}
       <div className="app-card" style={{ overflowX: 'auto', padding: 0 }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem', minWidth: '820px' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem', minWidth: isAdmin ? '820px' : '700px' }}>
           <thead>
             <tr style={{ background: '#F0F9FF', borderBottom: '1px solid #D4F1F7', color: '#0077B6', fontFamily: 'var(--font-title)', userSelect: 'none' }}>
               <th onClick={() => handleSort('receiptNo')} style={{ padding: '14px 16px', cursor: 'pointer', whiteSpace: 'nowrap', minWidth: '135px' }}>
@@ -223,7 +227,7 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
               <th onClick={() => handleSort('notes')} style={{ padding: '14px 16px', cursor: 'pointer', whiteSpace: 'nowrap', minWidth: '130px' }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center' }}>Notes {renderSortIcon('notes')}</span>
               </th>
-              <th style={{ padding: '14px 16px', textAlign: 'right', whiteSpace: 'nowrap', minWidth: '125px' }}>Actions</th>
+              {isAdmin && <th style={{ padding: '14px 16px', textAlign: 'right', whiteSpace: 'nowrap', minWidth: '125px' }}>Actions</th>}
             </tr>
           </thead>
           <tbody>
@@ -301,35 +305,37 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
                   </td>
                   <td style={{ padding: '12px 16px', color: 'var(--text-secondary)', whiteSpace: 'nowrap', fontSize: '0.84rem' }}>{c.date}</td>
                   <td style={{ padding: '12px 16px', color: 'var(--text-secondary)', fontSize: '0.82rem', whiteSpace: 'nowrap', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.notes || '-'}</td>
-                  <td style={{ padding: '12px 16px', textAlign: 'right', whiteSpace: 'nowrap' }}>
-                    <div style={{ display: 'inline-flex', gap: '8px', alignItems: 'center' }}>
-                      {isZeroPending && (
+                  {isAdmin && (
+                    <td style={{ padding: '12px 16px', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                      <div style={{ display: 'inline-flex', gap: '8px', alignItems: 'center' }}>
+                        {isZeroPending && (
+                          <button
+                            onClick={() => handleSendReminder(c)}
+                            style={{ background: '#ECFDF5', border: '1px solid #A7F3D0', color: '#059669', cursor: 'pointer', padding: '4px 8px', borderRadius: '6px', display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', fontWeight: 700, whiteSpace: 'nowrap' }}
+                            title="Send WhatsApp Reminder"
+                          >
+                            <Send size={13} /> Reminder
+                          </button>
+                        )}
+
                         <button
-                          onClick={() => handleSendReminder(c)}
-                          style={{ background: '#ECFDF5', border: '1px solid #A7F3D0', color: '#059669', cursor: 'pointer', padding: '4px 8px', borderRadius: '6px', display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', fontWeight: 700, whiteSpace: 'nowrap' }}
-                          title="Send WhatsApp Reminder"
+                          onClick={() => handleOpenEdit(c)}
+                          style={{ background: 'none', border: 'none', color: '#2563EB', cursor: 'pointer', padding: '4px' }}
+                          title="Edit Donation"
                         >
-                          <Send size={13} /> Reminder
+                          <Pencil size={15} />
                         </button>
-                      )}
 
-                      <button
-                        onClick={() => handleOpenEdit(c)}
-                        style={{ background: 'none', border: 'none', color: '#2563EB', cursor: 'pointer', padding: '4px' }}
-                        title="Edit Donation"
-                      >
-                        <Pencil size={15} />
-                      </button>
-
-                      <button
-                        onClick={() => onDeleteChanda(c.id)}
-                        style={{ background: 'none', border: 'none', color: '#DC2626', cursor: 'pointer', padding: '4px' }}
-                        title="Delete Record"
-                      >
-                        <Trash2 size={15} />
-                      </button>
-                    </div>
-                  </td>
+                        <button
+                          onClick={() => onDeleteChanda(c.id)}
+                          style={{ background: 'none', border: 'none', color: '#DC2626', cursor: 'pointer', padding: '4px' }}
+                          title="Delete Record"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                    </td>
+                  )}
                 </tr>
               );
             })}

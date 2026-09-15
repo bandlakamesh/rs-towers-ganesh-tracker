@@ -6,11 +6,13 @@ import { generateWhatsAppReminderText, openWhatsAppShareLink } from '../utils/wh
 interface FlatDirectoryProps {
   flats: FlatStatus[];
   onSelectFlatPayment: (flatNo: string, residentName: string) => void;
+  isAdmin?: boolean;
 }
 
 export const FlatDirectory: React.FC<FlatDirectoryProps> = ({
   flats,
   onSelectFlatPayment,
+  isAdmin = false,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'All' | 'Received' | 'Pending'>('All');
@@ -138,8 +140,8 @@ export const FlatDirectory: React.FC<FlatDirectoryProps> = ({
                 )}
               </div>
 
-              {/* Action Buttons: Shown ONLY for Pending / Partial flats */}
-              {!isFullyPaid && (
+              {/* Action Buttons: Shown ONLY for Pending / Partial flats when Admin */}
+              {!isFullyPaid && isAdmin && (
                 <div style={{ display: 'flex', gap: '8px', borderTop: '1px solid #F1F5F9', paddingTop: '10px', marginTop: '12px' }}>
                   <button
                     className="app-btn app-btn-secondary"

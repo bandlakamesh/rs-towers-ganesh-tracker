@@ -9,6 +9,7 @@ interface ExpenseLogProps {
   onEditExpense: (expense: ExpenseRecord) => void;
   onDeleteExpense: (id: string) => void;
   openAddModalTrigger?: number;
+  isAdmin?: boolean;
 }
 
 type SortField = 'category' | 'description' | 'amount' | 'paidBy' | 'paymentMode' | 'date';
@@ -52,6 +53,7 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
   onEditExpense,
   onDeleteExpense,
   openAddModalTrigger,
+  isAdmin = false,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<ExpenseRecord | null>(null);
@@ -262,9 +264,11 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
             ))}
           </select>
 
-          <button className="app-btn action-btn" onClick={handleOpenAdd} style={{ background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)', color: '#FFF' }}>
-            <Plus size={18} /> Record Expense
-          </button>
+          {isAdmin && (
+            <button className="app-btn action-btn" onClick={handleOpenAdd} style={{ background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)', color: '#FFF' }}>
+              <Plus size={18} /> Record Expense
+            </button>
+          )}
         </div>
       </div>
 
@@ -347,7 +351,7 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
                 <span style={{ display: 'inline-flex', alignItems: 'center' }}>Date {renderSortIcon('date')}</span>
               </th>
               <th style={{ padding: '14px 16px', whiteSpace: 'nowrap', minWidth: '110px' }}>Bill Proof</th>
-              <th style={{ padding: '14px 16px', textAlign: 'right', whiteSpace: 'nowrap', minWidth: '95px' }}>Actions</th>
+              {isAdmin && <th style={{ padding: '14px 16px', textAlign: 'right', whiteSpace: 'nowrap', minWidth: '95px' }}>Actions</th>}
             </tr>
           </thead>
           <tbody>
@@ -401,24 +405,26 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
                     <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', whiteSpace: 'nowrap' }}>No Bill</span>
                   )}
                 </td>
-                <td style={{ padding: '12px 16px', textAlign: 'right', whiteSpace: 'nowrap' }}>
-                  <div style={{ display: 'inline-flex', gap: '8px', alignItems: 'center' }}>
-                    <button
-                      onClick={() => handleOpenEdit(e)}
-                      style={{ background: 'none', border: 'none', color: '#2563EB', cursor: 'pointer', padding: '4px' }}
-                      title="Edit Expense"
-                    >
-                      <Pencil size={15} />
-                    </button>
-                    <button
-                      onClick={() => onDeleteExpense(e.id)}
-                      style={{ background: 'none', border: 'none', color: '#DC2626', cursor: 'pointer', padding: '4px' }}
-                      title="Delete Record"
-                    >
-                      <Trash2 size={15} />
-                    </button>
-                  </div>
-                </td>
+                {isAdmin && (
+                  <td style={{ padding: '12px 16px', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                    <div style={{ display: 'inline-flex', gap: '8px', alignItems: 'center' }}>
+                      <button
+                        onClick={() => handleOpenEdit(e)}
+                        style={{ background: 'none', border: 'none', color: '#2563EB', cursor: 'pointer', padding: '4px' }}
+                        title="Edit Expense"
+                      >
+                        <Pencil size={15} />
+                      </button>
+                      <button
+                        onClick={() => onDeleteExpense(e.id)}
+                        style={{ background: 'none', border: 'none', color: '#DC2626', cursor: 'pointer', padding: '4px' }}
+                        title="Delete Record"
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    </div>
+                  </td>
+                )}
               </tr>
             ))}
 

@@ -71,4 +71,6 @@ export const INITIAL_APP_STATE: AppState = {
   totalTarget: 45000, // 15 flats @ 3000 each
   lastUpdated: 1789469180100, // Fixed baseline timestamp corresponding to Yugandhar's edits
   cloudSyncKey: 'rs-towers-ganesh-2026-default-key',
+  adminFlats: ['302'], // Default root admin flat (Kamesh)
+  rootFlat: '302',
 };

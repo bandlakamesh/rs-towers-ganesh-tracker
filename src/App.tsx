@@ -15,14 +15,21 @@ import { ExpenseLog } from './components/ExpenseLog';
 import { WhatsAppShareModal } from './components/WhatsAppShareModal';
 import { EventTimeline } from './components/EventTimeline';
 import { AnalyticsCharts } from './components/AnalyticsCharts';
+import { AdminPinModal } from './components/AdminPinModal';
 
 export const App: React.FC = () => {
   const [appState, setAppState] = useState<AppState>(() => loadAppState());
   const [activeTab, setActiveTab] = useState<'dashboard' | 'chanda' | 'expenses' | 'schedule'>('dashboard');
 
+  // Role Security & Admin Mode State
+  const [isAdmin, setIsAdmin] = useState<boolean>(() => {
+    return localStorage.getItem('rs_towers_is_admin') === 'true';
+  });
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState<boolean>(false);
+
   // Modals state
-  const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
-  const [expenseModalTrigger, setExpenseModalTrigger] = useState(0);
+  const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState<boolean>(false);
+  const [expenseModalTrigger, setExpenseModalTrigger] = useState<number>(0);
 
   // Auto-fetch latest cloud data on mount & set up 10-second live polling sync
   useEffect(() => {
@@ -57,6 +64,25 @@ export const App: React.FC = () => {
   }, []);
 
   const handleStateUpdate = (newState: AppState) => {
+    setAppState(newState);
+    syncToCloudRemote(newState);
+  };
+
+  const handleToggleFlatAdmin = (flatNo: string) => {
+    if (flatNo === '302') return; // Cannot revoke 302 (Root User Kamesh)
+    const currentAdminFlats = appState.adminFlats || ['302'];
+    const isCurrentlyAdmin = currentAdminFlats.includes(flatNo);
+
+    const updatedAdminFlats = isCurrentlyAdmin
+      ? currentAdminFlats.filter((f) => f !== flatNo)
+      : [...currentAdminFlats, flatNo];
+
+    const newState: AppState = {
+      ...appState,
+      adminFlats: updatedAdminFlats,
+      lastUpdated: Date.now(),
+    };
+
     setAppState(newState);
     syncToCloudRemote(newState);
   };
@@ -185,6 +211,7 @@ export const App: React.FC = () => {
   };
 
   const handleFABClick = () => {
+    if (!isAdmin) return;
     setActiveTab('expenses');
     setExpenseModalTrigger((prev) => prev + 1);
   };
@@ -198,6 +225,8 @@ export const App: React.FC = () => {
         onStateUpdate={handleStateUpdate}
         onOpenWhatsAppModal={() => setIsWhatsAppModalOpen(true)}
         onGoHome={() => setActiveTab('dashboard')}
+        isAdmin={isAdmin}
+        onOpenAdminModal={() => setIsAdminModalOpen(true)}
       />
 
       {/* Main App Container */}
@@ -244,6 +273,7 @@ export const App: React.FC = () => {
                 setActiveTab('expenses');
                 setExpenseModalTrigger((prev) => prev + 1);
               }}
+              isAdmin={isAdmin}
             />
 
             <AnalyticsCharts state={appState} />
@@ -257,6 +287,7 @@ export const App: React.FC = () => {
             onAddChanda={handleAddChanda}
             onEditChanda={handleEditChanda}
             onDeleteChanda={handleDeleteChanda}
+            isAdmin={isAdmin}
           />
         )}
 
@@ -269,6 +300,7 @@ export const App: React.FC = () => {
             onEditExpense={handleEditExpense}
             onDeleteExpense={handleDeleteExpense}
             openAddModalTrigger={expenseModalTrigger}
+            isAdmin={isAdmin}
           />
         )}
 
@@ -279,19 +311,22 @@ export const App: React.FC = () => {
             onAddEvent={handleAddEvent}
             onEditEvent={handleEditEvent}
             onDeleteEvent={handleDeleteEvent}
+            isAdmin={isAdmin}
           />
         )}
 
       </main>
 
-      {/* Floating Action Button (FAB) for Mobile - Opens Add Expense Modal */}
-      <button
-        className="fab-btn"
-        onClick={handleFABClick}
-        title="Add Expense Entry"
-      >
-        <Plus size={28} />
-      </button>
+      {/* Floating Action Button (FAB) for Mobile - Visible ONLY for Admin */}
+      {isAdmin && (
+        <button
+          className="fab-btn"
+          onClick={handleFABClick}
+          title="Add Expense Entry"
+        >
+          <Plus size={28} />
+        </button>
+      )}
 
       {/* Mobile Bottom Navigation Bar */}
       <div className="bottom-nav">
@@ -350,6 +385,25 @@ export const App: React.FC = () => {
         <WhatsAppShareModal
           state={appState}
           onClose={() => setIsWhatsAppModalOpen(false)}
+        />
+      )}
+
+      {isAdminModalOpen && (
+        <AdminPinModal
+          onClose={() => setIsAdminModalOpen(false)}
+          isAdmin={isAdmin}
+          onAdminLoginSuccess={() => {
+            setIsAdmin(true);
+            localStorage.setItem('rs_towers_is_admin', 'true');
+          }}
+          onAdminLogout={() => {
+            setIsAdmin(false);
+            localStorage.setItem('rs_towers_is_admin', 'false');
+          }}
+          flatsList={appState.flatsList}
+          adminFlats={appState.adminFlats}
+          rootFlat={appState.rootFlat}
+          onToggleFlatAdmin={handleToggleFlatAdmin}
         />
       )}
 

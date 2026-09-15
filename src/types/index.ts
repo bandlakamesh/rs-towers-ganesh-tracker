@@ -68,6 +68,8 @@ export interface AppState {
   totalTarget: number;
   lastUpdated: number;
   cloudSyncKey: string;
+  adminFlats?: string[];
+  rootFlat?: string;
 }
 
 export interface CategorySummary {

@@ -8,6 +8,7 @@ interface EventTimelineProps {
   onAddEvent?: (event: Omit<PoojaEvent, 'id'>) => void;
   onEditEvent?: (event: PoojaEvent) => void;
   onDeleteEvent?: (id: string) => void;
+  isAdmin?: boolean;
 }
 
 export const EventTimeline: React.FC<EventTimelineProps> = ({
@@ -15,6 +16,7 @@ export const EventTimeline: React.FC<EventTimelineProps> = ({
   onAddEvent,
   onEditEvent,
   onDeleteEvent,
+  isAdmin = false,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState<PoojaEvent | null>(null);
@@ -113,9 +115,11 @@ export const EventTimeline: React.FC<EventTimelineProps> = ({
           </p>
         </div>
 
-        <button className="app-btn app-btn-primary action-btn" onClick={handleOpenAdd}>
-          <Plus size={18} /> Add Event
-        </button>
+        {isAdmin && (
+          <button className="app-btn app-btn-primary action-btn" onClick={handleOpenAdd}>
+            <Plus size={18} /> Add Event
+          </button>
+        )}
       </div>
 
       {/* Grid of Event Cards */}
@@ -145,44 +149,46 @@ export const EventTimeline: React.FC<EventTimelineProps> = ({
                   </span>
                 )}
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <button
-                    onClick={() => handleSendEventReminder(evt)}
-                    style={{
-                      background: '#25D366',
-                      color: '#FFFFFF',
-                      border: 'none',
-                      borderRadius: '6px',
-                      padding: '4px 10px',
-                      fontSize: '0.75rem',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                    }}
-                    title="Send Event Reminder on WhatsApp"
-                  >
-                    <Send size={12} /> WhatsApp
-                  </button>
+                {isAdmin && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <button
+                      onClick={() => handleSendEventReminder(evt)}
+                      style={{
+                        background: '#25D366',
+                        color: '#FFFFFF',
+                        border: 'none',
+                        borderRadius: '6px',
+                        padding: '4px 10px',
+                        fontSize: '0.75rem',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                      }}
+                      title="Send Event Reminder on WhatsApp"
+                    >
+                      <Send size={12} /> WhatsApp
+                    </button>
 
-                  <button
-                    onClick={() => handleOpenEdit(evt)}
-                    style={{ background: 'none', border: 'none', color: '#2563EB', cursor: 'pointer', padding: '4px' }}
-                    title="Edit Event"
-                  >
-                    <Pencil size={15} />
-                  </button>
+                    <button
+                      onClick={() => handleOpenEdit(evt)}
+                      style={{ background: 'none', border: 'none', color: '#2563EB', cursor: 'pointer', padding: '4px' }}
+                      title="Edit Event"
+                    >
+                      <Pencil size={15} />
+                    </button>
 
-                  <button
-                    onClick={() => onDeleteEvent?.(evt.id)}
-                    style={{ background: 'none', border: 'none', color: '#DC2626', cursor: 'pointer', padding: '4px' }}
-                    title="Delete Event"
-                  >
-                    <Trash2 size={15} />
-                  </button>
-                </div>
+                    <button
+                      onClick={() => onDeleteEvent?.(evt.id)}
+                      style={{ background: 'none', border: 'none', color: '#DC2626', cursor: 'pointer', padding: '4px' }}
+                      title="Delete Event"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
+                )}
               </div>
 
               <h3 style={{ fontSize: '1.1rem', marginBottom: '8px', color: evt.isImportant ? '#92400E' : '#0F172A' }}>

@@ -7,12 +7,14 @@ interface DashboardStatsProps {
   state: AppState;
   onOpenAddChanda: () => void;
   onOpenAddExpense: () => void;
+  isAdmin?: boolean;
 }
 
 export const DashboardStats: React.FC<DashboardStatsProps> = ({
   state,
   onOpenAddChanda,
   onOpenAddExpense,
+  isAdmin = false,
 }) => {
   const totalCollected = state.chandaList
     .filter((c) => c.status === 'Received')
@@ -124,15 +126,17 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({
 
       </div>
 
-      {/* Quick Action Bar */}
-      <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-        <button className="app-btn app-btn-primary" onClick={onOpenAddChanda}>
-          <Plus size={16} /> Record Chanda
-        </button>
-        <button className="app-btn app-btn-secondary" onClick={onOpenAddExpense}>
-          <Receipt size={16} /> Record Expense
-        </button>
-      </div>
+      {/* Quick Action Bar (Admin Only) */}
+      {isAdmin && (
+        <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+          <button className="app-btn app-btn-primary" onClick={onOpenAddChanda}>
+            <Plus size={16} /> Record Chanda
+          </button>
+          <button className="app-btn app-btn-secondary" onClick={onOpenAddExpense}>
+            <Receipt size={16} /> Record Expense
+          </button>
+        </div>
+      )}
 
     </div>
   );
