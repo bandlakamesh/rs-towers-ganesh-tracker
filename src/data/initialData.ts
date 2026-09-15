@@ -34,6 +34,18 @@ export const INITIAL_CHANDA: ChandaRecord[] = [
 ];
 
 export const INITIAL_EXPENSES: ExpenseRecord[] = [
+  { id: 'exp-1789469180100', category: 'Pandal & Decoration', description: 'Banana Tree', amount: 50, paidBy: 'Flat 301 - Yugandhar', date: '2026-09-15', paymentMode: 'UPI', billUrl: '', createdAt: 1789469180100 },
+  { id: 'exp-1789469150502', category: 'Miscellaneous', description: 'Ropes', amount: 150, paidBy: 'Flat 301 - Yugandhar', date: '2026-09-15', paymentMode: 'UPI', billUrl: '', createdAt: 1789469150502 },
+  { id: 'exp-1789469134042', category: 'Pandal & Decoration', description: 'Decoration Thornalu', amount: 300, paidBy: 'Flat 301 - Yugandhar', date: '2026-09-15', paymentMode: 'UPI', billUrl: '', createdAt: 1789469134042 },
+  { id: 'exp-1789469115779', category: 'Daily Aarti & Pandit', description: 'Pancha', amount: 300, paidBy: 'Flat 301 - Yugandhar', date: '2026-09-15', paymentMode: 'UPI', billUrl: '', createdAt: 1789469115779 },
+  { id: 'exp-1789469101132', category: 'Miscellaneous', description: 'BLUE mat', amount: 800, paidBy: 'Flat 301 - Yugandhar', date: '2026-09-15', paymentMode: 'UPI', billUrl: '', createdAt: 1789469101132 },
+  { id: 'exp-1789469082228', category: 'Daily Aarti & Pandit', description: 'Jaggery/wood apple', amount: 23, paidBy: 'Flat 301 - Yugandhar', date: '2026-09-15', paymentMode: 'UPI', billUrl: '', createdAt: 1789469082228 },
+  { id: 'exp-1789469055709', category: 'Miscellaneous', description: 'chain/key', amount: 320, paidBy: 'Flat 301 - Yugandhar', date: '2026-09-15', paymentMode: 'UPI', billUrl: '', createdAt: 1789469055709 },
+  { id: 'exp-1789469033487', category: 'Daily Aarti & Pandit', description: 'Kalash', amount: 269, paidBy: 'Flat 301 - Yugandhar', date: '2026-09-15', paymentMode: 'UPI', billUrl: '', createdAt: 1789469033487 },
+  { id: 'exp-1789469010758', category: 'Pandal & Decoration', description: 'LED focus light', amount: 256, paidBy: 'Flat 301 - Yugandhar', date: '2026-09-15', paymentMode: 'UPI', billUrl: '', createdAt: 1789469010758 },
+  { id: 'exp-1789468988296', category: 'Daily Aarti & Pandit', description: 'Premidalu', amount: 140, paidBy: 'Flat 301 - Yugandhar', date: '2026-09-15', paymentMode: 'UPI', billUrl: '', createdAt: 1789468988296 },
+  { id: 'exp-1789468964332', category: 'Pandal & Decoration', description: 'curtains', amount: 561, paidBy: 'Flat 301 - Yugandhar', date: '2026-09-15', paymentMode: 'UPI', billUrl: '', createdAt: 1789468964332 },
+  { id: 'exp-1789468700488', category: 'Daily Aarti & Pandit', description: 'Pooja Items', amount: 632, paidBy: 'Flat 301 - Yugandhar', date: '2026-09-15', paymentMode: 'UPI', billUrl: '', createdAt: 1789468700488 },
   { id: 'exp-real-1', category: 'Murti & Flowers', description: 'Ganesh idol', amount: 5500, paidBy: 'Flat 301 - Yugandhar', date: '2026-09-14', paymentMode: 'UPI', createdAt: 1789400000100 },
   { id: 'exp-real-2', category: 'Prasadam & Food', description: 'Food (60 plates * ₹230 per plate)', amount: 13800, paidBy: 'Vendor', date: '2026-09-14', paymentMode: 'UPI', createdAt: 1789400000101 },
   { id: 'exp-real-3', category: 'Daily Aarti & Pandit', description: 'Pooja Items - Rice', amount: 104, paidBy: 'Flat 302 - Kamesh', date: '2026-09-14', paymentMode: 'UPI', createdAt: 1789400000102 },
@@ -57,6 +69,6 @@ export const INITIAL_APP_STATE: AppState = {
   flatsList: INITIAL_FLATS,
   poojaEvents: INITIAL_EVENTS,
   totalTarget: 45000, // 15 flats @ 3000 each
-  lastUpdated: Date.now(),
+  lastUpdated: 1789469180100, // Fixed baseline timestamp corresponding to Yugandhar's edits
   cloudSyncKey: 'rs-towers-ganesh-2026-default-key',
 };
