@@ -20,11 +20,6 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({
   const totalSpent = state.expenseList.reduce((acc, e) => acc + e.amount, 0);
   const netBalance = totalCollected - totalSpent;
 
-  const totalFlats = state.flatsList.length;
-  const paidFlatsCount = state.flatsList.filter((f) => f.status === 'Received').length;
-  const targetBudget = state.totalTarget || 45000;
-  const progressPercent = Math.min(Math.round((totalCollected / targetBudget) * 100), 100);
-
   return (
     <div style={{ marginBottom: '24px' }}>
       
@@ -63,7 +58,7 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({
           </div>
         </div>
 
-        {/* Card 3: Balance */}
+        {/* Card 3: Cash in Hand */}
         <div className="app-card" style={{ padding: '18px', border: '1px solid rgba(245, 158, 11, 0.4)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
             <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Cash in Hand</span>
@@ -81,33 +76,14 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({
 
       </div>
 
-      {/* Progress & Quick Add Bar */}
-      <div className="app-card" style={{ padding: '16px 20px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
-        
-        <div style={{ flex: '1 1 260px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', fontWeight: 600, marginBottom: '6px' }}>
-            <span>Flats Participation ({paidFlatsCount}/{totalFlats} Paid)</span>
-            <span style={{ color: 'var(--text-gold)' }}>{progressPercent}% Target</span>
-          </div>
-          <div style={{ width: '100%', height: '8px', background: 'rgba(255, 255, 255, 0.08)', borderRadius: '6px', overflow: 'hidden' }}>
-            <div style={{
-              height: '100%',
-              width: `${progressPercent}%`,
-              background: 'linear-gradient(90deg, #F59E0B 0%, #10B981 100%)',
-              borderRadius: '6px',
-            }} />
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <button className="app-btn app-btn-primary" onClick={onOpenAddChanda}>
-            <Plus size={16} /> Add Payment
-          </button>
-          <button className="app-btn app-btn-secondary" onClick={onOpenAddExpense}>
-            <Receipt size={16} /> Add Expense
-          </button>
-        </div>
-
+      {/* Quick Action Bar */}
+      <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+        <button className="app-btn app-btn-primary" onClick={onOpenAddChanda}>
+          <Plus size={16} /> Record Chanda
+        </button>
+        <button className="app-btn app-btn-secondary" onClick={onOpenAddExpense}>
+          <Receipt size={16} /> Record Expense
+        </button>
       </div>
 
     </div>
