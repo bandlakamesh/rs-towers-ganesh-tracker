@@ -38,7 +38,18 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <header className="app-card" style={{ borderRadius: 0, borderTop: 0, borderLeft: 0, borderRight: 0, marginBottom: 0, padding: '14px 20px' }}>
+    <header style={{
+      background: 'rgba(255, 255, 255, 0.82)',
+      backdropFilter: 'blur(20px)',
+      WebkitBackdropFilter: 'blur(20px)',
+      borderBottom: '1px solid rgba(255, 255, 255, 0.5)',
+      boxShadow: '0 4px 20px rgba(0, 50, 80, 0.05)',
+      marginBottom: 0,
+      padding: '14px 20px',
+      position: 'sticky',
+      top: 0,
+      zIndex: 900,
+    }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
         
         {/* Brand Title with Ganapathi Badge */}
@@ -77,15 +88,15 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Share2 size={16} /> Share WhatsApp
           </button>
 
-          <button className="app-btn app-btn-primary" onClick={handlePrintPDF} style={{ background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)', color: '#FFF', padding: '8px 14px', fontSize: '0.84rem' }}>
+          <button className="app-btn app-btn-primary" onClick={handlePrintPDF} style={{ background: 'linear-gradient(135deg, #0096C7 0%, #0077B6 100%)', color: '#FFF', padding: '8px 14px', fontSize: '0.84rem', boxShadow: '0 4px 14px rgba(0, 150, 199, 0.25)' }}>
             <Printer size={16} /> Print / Download PDF
           </button>
 
-          <button className="app-btn app-btn-secondary" onClick={handleExport} style={{ padding: '8px 12px', fontSize: '0.84rem' }} title="Download JSON Backup">
+          <button className="app-btn app-btn-secondary" onClick={handleExport} style={{ padding: '8px 12px', fontSize: '0.84rem', background: 'rgba(255, 255, 255, 0.75)', borderColor: '#B2D8E5', color: '#0077B6' }} title="Download JSON Backup">
             <Download size={16} />
           </button>
 
-          <button className="app-btn app-btn-secondary" onClick={() => jsonInputRef.current?.click()} style={{ padding: '8px 12px', fontSize: '0.84rem' }} title="Restore JSON Backup">
+          <button className="app-btn app-btn-secondary" onClick={() => jsonInputRef.current?.click()} style={{ padding: '8px 12px', fontSize: '0.84rem', background: 'rgba(255, 255, 255, 0.75)', borderColor: '#B2D8E5', color: '#0077B6' }} title="Restore JSON Backup">
             <Upload size={16} />
           </button>
 

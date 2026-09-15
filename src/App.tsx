@@ -337,7 +337,7 @@ export const App: React.FC = () => {
       </div>
 
       {/* Footer */}
-      <footer style={{ marginTop: '40px', padding: '20px', textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-secondary)', borderTop: '1px solid #E2E8F0', background: '#FFFFFF' }}>
+      <footer style={{ marginTop: '40px', padding: '20px', textAlign: 'center', fontSize: '0.85rem', color: '#0F172A', borderTop: '1px solid rgba(255, 255, 255, 0.5)', background: 'rgba(255, 255, 255, 0.82)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <span>🪔 <strong>R.S Towers Ganesh Utsav 2026</strong></span>
         </div>
