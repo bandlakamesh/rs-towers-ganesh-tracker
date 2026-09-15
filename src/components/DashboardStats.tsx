@@ -52,11 +52,24 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({
         </div>
 
         {/* Hero Artwork Image */}
-        <div className="hero-banner-artwork" style={{ position: 'relative', width: '180px', height: '110px', borderRadius: '14px', overflow: 'hidden', flexShrink: 0, boxShadow: '0 6px 16px rgba(180, 83, 9, 0.25)', border: '2px solid #FDE68A' }}>
+        <div className="hero-banner-artwork" style={{
+          position: 'relative',
+          width: '210px',
+          height: '125px',
+          borderRadius: '16px',
+          overflow: 'hidden',
+          flexShrink: 0,
+          boxShadow: '0 6px 18px rgba(180, 83, 9, 0.22)',
+          border: '2px solid #FDE68A',
+          background: 'linear-gradient(135deg, #FFF7ED 0%, #FEF3C7 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
           <img
             src={ganeshaBanner}
             alt="Ganapathi Utsav"
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
           />
         </div>
       </div>
