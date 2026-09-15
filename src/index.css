@@ -324,6 +324,106 @@ h1, h2, h3, h4, h5, h6 {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Responsive Section Header Layout */
+.table-header-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+  .table-header-bar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.section-header-title h2 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0 0 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.3;
+}
+
+.section-header-title p {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Header Action Controls Group */
+.table-header-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .table-header-controls {
+    flex-direction: row;
+    align-items: center;
+    width: auto;
+  }
+}
+
+.table-header-controls .filter-select {
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .table-header-controls .filter-select {
+    width: auto;
+    min-width: 130px;
+  }
+}
+
+.table-header-controls .action-btn {
+  width: 100%;
+  white-space: nowrap;
+}
+
+@media (min-width: 640px) {
+  .table-header-controls .action-btn {
+    width: auto;
+  }
+}
+
+/* Bulletproof Search Box Wrapper */
+.search-box-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+@media (min-width: 640px) {
+  .search-box-wrapper {
+    width: 220px;
+  }
+}
+
+.search-box-wrapper .search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--text-secondary);
+  pointer-events: none;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+.search-box-wrapper .form-control {
+  width: 100%;
+  padding-left: 36px !important;
+}
+
 /* Mobile responsive adjustments */
 @media (max-width: 767px) {
   .hero-banner-container {
@@ -347,17 +447,6 @@ h1, h2, h3, h4, h5, h6 {
   .header-actions-row {
     width: 100% !important;
     justify-content: flex-end !important;
-  }
-  .table-header-controls {
-    width: 100% !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 10px !important;
-  }
-  .table-header-controls > div,
-  .table-header-controls > select,
-  .table-header-controls > button {
-    width: 100% !important;
   }
 }
 

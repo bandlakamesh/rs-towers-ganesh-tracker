@@ -158,34 +158,32 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
     <div style={{ marginBottom: '32px' }}>
       
       {/* Header Bar */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '16px', marginBottom: '20px' }}>
-        <div>
-          <h2 style={{ fontSize: '1.25rem', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Wallet style={{ color: '#2563EB' }} /> Chanda Collection Log
+      <div className="table-header-bar">
+        <div className="section-header-title">
+          <h2>
+            <Wallet style={{ color: '#2563EB', flexShrink: 0 }} /> Chanda Collection Log
           </h2>
-          <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0 }}>
+          <p>
             List of all resident contributions & digital receipts (Click table headers to sort)
           </p>
         </div>
 
-        <div className="table-header-controls" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <div style={{ position: 'relative', flex: '1 1 180px', minWidth: '160px' }}>
-            <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+        <div className="table-header-controls">
+          <div className="search-box-wrapper">
+            <Search size={16} className="search-icon" />
             <input
               type="text"
               className="form-control"
               placeholder="Search receipts..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              style={{ paddingLeft: '32px' }}
             />
           </div>
 
           <select
-            className="form-control"
+            className="form-control filter-select"
             value={modeFilter}
             onChange={(e) => setModeFilter(e.target.value)}
-            style={{ width: '130px', flex: '0 0 auto' }}
           >
             <option value="All">All Modes</option>
             <option value="UPI">UPI</option>
@@ -193,7 +191,7 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
             <option value="NetBanking">NetBanking</option>
           </select>
 
-          <button className="app-btn app-btn-primary" onClick={handleOpenAdd} style={{ flex: '0 0 auto' }}>
+          <button className="app-btn app-btn-primary action-btn" onClick={handleOpenAdd}>
             <Plus size={18} /> Record Payment
           </button>
         </div>

@@ -45,10 +45,10 @@ export const FlatDirectory: React.FC<FlatDirectoryProps> = ({
     <div style={{ marginBottom: '28px' }}>
       
       {/* Header & Pill Chips */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '12px', marginBottom: '16px' }}>
-        <div>
-          <h2 style={{ fontSize: '1.15rem', margin: 0 }}>🏢 RS Towers Flats Directory</h2>
-          <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', margin: 0 }}>
+      <div className="table-header-bar">
+        <div className="section-header-title">
+          <h2>🏢 RS Towers Flats Directory</h2>
+          <p>
             Flat-wise donation collection status and WhatsApp reminders
           </p>
         </div>
@@ -77,15 +77,14 @@ export const FlatDirectory: React.FC<FlatDirectoryProps> = ({
       </div>
 
       {/* Search Input Bar */}
-      <div style={{ position: 'relative', marginBottom: '16px' }}>
-        <Search size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+      <div className="search-box-wrapper" style={{ marginBottom: '16px', width: '100%' }}>
+        <Search size={16} className="search-icon" />
         <input
           type="text"
           className="form-control"
           placeholder="Search Flat # or Resident Name..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          style={{ paddingLeft: '40px', borderRadius: '12px' }}
         />
       </div>
 

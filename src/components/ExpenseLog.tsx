@@ -229,34 +229,32 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
     <div style={{ marginBottom: '32px' }}>
       
       {/* Header Bar */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '16px', marginBottom: '20px' }}>
-        <div>
-          <h2 style={{ fontSize: '1.25rem', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <CreditCard style={{ color: '#DC2626' }} /> Ganesh Utsav Expense Register
+      <div className="table-header-bar">
+        <div className="section-header-title">
+          <h2>
+            <CreditCard style={{ color: '#DC2626', flexShrink: 0 }} /> Ganesh Utsav Expense Register
           </h2>
-          <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0 }}>
+          <p>
             Categorized expenses paid by committee members with bill photo proofs (Click table headers to sort)
           </p>
         </div>
 
-        <div className="table-header-controls" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <div style={{ position: 'relative', flex: '1 1 180px', minWidth: '160px' }}>
-            <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+        <div className="table-header-controls">
+          <div className="search-box-wrapper">
+            <Search size={16} className="search-icon" />
             <input
               type="text"
               className="form-control"
               placeholder="Search expenses..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              style={{ paddingLeft: '32px' }}
             />
           </div>
 
           <select
-            className="form-control"
+            className="form-control filter-select"
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            style={{ width: '160px', flex: '0 0 auto' }}
           >
             <option value="All">All Categories</option>
             {CATEGORIES.map((cat) => (
@@ -264,7 +262,7 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
             ))}
           </select>
 
-          <button className="app-btn" onClick={handleOpenAdd} style={{ background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)', color: '#FFF', flex: '0 0 auto' }}>
+          <button className="app-btn action-btn" onClick={handleOpenAdd} style={{ background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)', color: '#FFF' }}>
             <Plus size={18} /> Record Expense
           </button>
         </div>

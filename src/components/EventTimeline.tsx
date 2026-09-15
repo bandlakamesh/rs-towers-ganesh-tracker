@@ -103,17 +103,17 @@ export const EventTimeline: React.FC<EventTimelineProps> = ({
     <div style={{ marginBottom: '32px' }}>
       
       {/* Header Bar */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '16px', marginBottom: '20px' }}>
-        <div>
-          <h2 style={{ fontSize: '1.25rem', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Calendar style={{ color: '#2563EB' }} /> Pooja Schedule & Event Highlights
+      <div className="table-header-bar">
+        <div className="section-header-title">
+          <h2>
+            <Calendar style={{ color: '#2563EB', flexShrink: 0 }} /> Pooja Schedule & Event Highlights
           </h2>
-          <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0 }}>
+          <p>
             Daily Aarti timings, Annadanam feast, cultural programs & Visarjan details
           </p>
         </div>
 
-        <button className="app-btn app-btn-primary" onClick={handleOpenAdd}>
+        <button className="app-btn app-btn-primary action-btn" onClick={handleOpenAdd}>
           <Plus size={18} /> Add Event
         </button>
       </div>
