@@ -10,7 +10,6 @@ import {
 
 import { Navbar } from './components/Navbar';
 import { DashboardStats } from './components/DashboardStats';
-import { FlatDirectory } from './components/FlatDirectory';
 import { ChandaLog } from './components/ChandaLog';
 import { ExpenseLog } from './components/ExpenseLog';
 import { WhatsAppShareModal } from './components/WhatsAppShareModal';
@@ -178,7 +177,7 @@ export const App: React.FC = () => {
             className={`chip ${activeTab === 'dashboard' ? 'active' : ''}`}
             onClick={() => setActiveTab('dashboard')}
           >
-            <Building2 size={15} /> Overview & 15 Flats
+            <Building2 size={15} /> Overview
           </button>
 
           <button
@@ -212,21 +211,14 @@ export const App: React.FC = () => {
 
         {/* Dashboard Tab */}
         {activeTab === 'dashboard' && (
-          <>
-            <DashboardStats
-              state={appState}
-              onOpenAddChanda={() => setActiveTab('chanda')}
-              onOpenAddExpense={() => {
-                setActiveTab('expenses');
-                setExpenseModalTrigger((prev) => prev + 1);
-              }}
-            />
-
-            <FlatDirectory
-              flats={appState.flatsList}
-              onSelectFlatPayment={handleSelectFlatPayment}
-            />
-          </>
+          <DashboardStats
+            state={appState}
+            onOpenAddChanda={() => setActiveTab('chanda')}
+            onOpenAddExpense={() => {
+              setActiveTab('expenses');
+              setExpenseModalTrigger((prev) => prev + 1);
+            }}
+          />
         )}
 
         {/* Chanda Tab */}
