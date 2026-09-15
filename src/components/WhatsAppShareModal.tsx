@@ -80,7 +80,7 @@ export const WhatsAppShareModal: React.FC<WhatsAppShareModalProps> = ({
         {/* Live WhatsApp Markdown Message Preview Box */}
         <div className="form-group">
           <label style={{ fontWeight: 600, fontSize: '0.85rem', color: '#334155', marginBottom: '8px', display: 'block' }}>
-            Message Preview (Auto-generated with live numbers & GitHub Pages URL):
+            Message Preview (Auto-generated with live numbers):
           </label>
           <textarea
             className="form-control"

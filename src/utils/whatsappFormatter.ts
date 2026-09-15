@@ -35,10 +35,7 @@ export const generateWhatsAppBroadcastText = (state: AppState): string => {
 📌 *Major Expenses Paid*:
 ${topExpenses || '• No major expenses recorded yet.'}
 ---------------------------------------------
-🙏 *Thank you RS Towers Residents for your generous support!*
-
-🔗 *View Live Tracker & Detailed Bills*:
-${GITHUB_PAGES_LIVE_URL}`;
+🙏 *Thank you RS Towers Residents for your generous support!*`;
 };
 
 export const generateWhatsAppReminderText = (flatNo: string, residentName: string, pendingAmount: number): string => {
