@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { Building2, Receipt, Calendar, PieChart, Plus, Share2 } from 'lucide-react';
+import { Building2, Wallet, CreditCard, Calendar, PieChart, Plus, Share2 } from 'lucide-react';
 import type { AppState, ChandaRecord, ExpenseRecord, PoojaEvent } from './types';
 import {
   loadAppState,
@@ -215,14 +215,14 @@ export const App: React.FC = () => {
             className={`chip ${activeTab === 'chanda' ? 'active' : ''}`}
             onClick={() => setActiveTab('chanda')}
           >
-            <Receipt size={15} /> Donations ({appState.chandaList.length})
+            <Wallet size={15} /> Donations ({appState.chandaList.length})
           </button>
 
           <button
             className={`chip ${activeTab === 'expenses' ? 'active' : ''}`}
             onClick={() => setActiveTab('expenses')}
           >
-            <Receipt size={15} /> Expenses ({appState.expenseList.length})
+            <CreditCard size={15} /> Expenses ({appState.expenseList.length})
           </button>
 
           <button
@@ -305,7 +305,7 @@ export const App: React.FC = () => {
           className={`bottom-nav-item ${activeTab === 'chanda' ? 'active' : ''}`}
           onClick={() => setActiveTab('chanda')}
         >
-          <Receipt size={20} />
+          <Wallet size={20} />
           <span>Donations</span>
         </button>
 
@@ -313,7 +313,7 @@ export const App: React.FC = () => {
           className={`bottom-nav-item ${activeTab === 'expenses' ? 'active' : ''}`}
           onClick={() => setActiveTab('expenses')}
         >
-          <Receipt size={20} />
+          <CreditCard size={20} />
           <span>Expenses</span>
         </button>
 

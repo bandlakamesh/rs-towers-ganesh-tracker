@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Clock, MapPin, PhoneCall, Sparkles, Send, Plus, Pencil, Trash2, Printer } from 'lucide-react';
+import { Calendar, Clock, MapPin, PhoneCall, Sparkles, Send, Plus, Pencil, Trash2 } from 'lucide-react';
 import type { PoojaEvent } from '../types';
 import { generateWhatsAppEventReminderText, openWhatsAppShareLink } from '../utils/whatsappFormatter';
 
@@ -113,15 +113,9 @@ export const EventTimeline: React.FC<EventTimelineProps> = ({
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button className="app-btn app-btn-secondary no-print" onClick={() => window.print()}>
-            <Printer size={16} /> Print / PDF
-          </button>
-
-          <button className="app-btn app-btn-primary no-print" onClick={handleOpenAdd}>
-            <Plus size={18} /> Add Event
-          </button>
-        </div>
+        <button className="app-btn app-btn-primary" onClick={handleOpenAdd}>
+          <Plus size={18} /> Add Event
+        </button>
       </div>
 
       {/* Grid of Event Cards */}

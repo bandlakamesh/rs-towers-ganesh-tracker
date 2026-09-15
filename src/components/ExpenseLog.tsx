@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Pencil, Receipt, Search, Eye, ArrowUpDown, ArrowUp, ArrowDown, Printer, User, DollarSign } from 'lucide-react';
+import { Plus, Trash2, Pencil, CreditCard, Search, Eye, ArrowUpDown, ArrowUp, ArrowDown, User } from 'lucide-react';
 import type { ExpenseRecord, ExpenseCategory, PaymentMode } from '../types';
 
 interface ExpenseLogProps {
@@ -196,7 +196,7 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '16px', marginBottom: '20px' }}>
         <div>
           <h2 style={{ fontSize: '1.25rem', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Receipt style={{ color: '#DC2626' }} /> Ganesh Utsav Expense Register
+            <CreditCard style={{ color: '#DC2626' }} /> Ganesh Utsav Expense Register
           </h2>
           <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0 }}>
             Categorized expenses paid by committee members with bill photo proofs (Click table headers to sort)
@@ -228,11 +228,7 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
             ))}
           </select>
 
-          <button className="app-btn app-btn-secondary no-print" onClick={() => window.print()}>
-            <Printer size={16} /> Print / PDF
-          </button>
-
-          <button className="app-btn no-print" onClick={handleOpenAdd} style={{ background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)', color: '#FFF' }}>
+          <button className="app-btn" onClick={handleOpenAdd} style={{ background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)', color: '#FFF' }}>
             <Plus size={18} /> Record Expense
           </button>
         </div>
@@ -281,7 +277,7 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
                 </div>
 
                 <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#DC2626', display: 'flex', alignItems: 'center', gap: '2px' }}>
-                  <DollarSign size={15} color="#DC2626" /> ₹{m.totalAmount.toLocaleString('en-IN')}
+                  ₹{m.totalAmount.toLocaleString('en-IN')}
                 </div>
 
                 <div style={{ fontSize: '0.72rem', color: isSelected ? '#1D4ED8' : '#64748B', marginTop: '2px' }}>

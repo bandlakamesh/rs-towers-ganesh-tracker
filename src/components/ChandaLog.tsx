@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Pencil, Send, Receipt, Search, ArrowUpDown, ArrowUp, ArrowDown, Printer } from 'lucide-react';
+import { Plus, Trash2, Pencil, Send, Wallet, Search, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import type { ChandaRecord, PaymentMode } from '../types';
 import { generateWhatsAppReminderText, openWhatsAppShareLink } from '../utils/whatsappFormatter';
 
@@ -161,7 +161,7 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '16px', marginBottom: '20px' }}>
         <div>
           <h2 style={{ fontSize: '1.25rem', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Receipt style={{ color: '#2563EB' }} /> Chanda Collection Log
+            <Wallet style={{ color: '#2563EB' }} /> Chanda Collection Log
           </h2>
           <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0 }}>
             List of all resident contributions & digital receipts (Click table headers to sort)
@@ -193,11 +193,7 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
             <option value="NetBanking">NetBanking</option>
           </select>
 
-          <button className="app-btn app-btn-secondary no-print" onClick={() => window.print()}>
-            <Printer size={16} /> Print / PDF
-          </button>
-
-          <button className="app-btn app-btn-primary no-print" onClick={handleOpenAdd}>
+          <button className="app-btn app-btn-primary" onClick={handleOpenAdd}>
             <Plus size={18} /> Record Payment
           </button>
         </div>
