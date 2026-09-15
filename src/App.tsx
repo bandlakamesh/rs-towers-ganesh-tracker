@@ -197,6 +197,7 @@ export const App: React.FC = () => {
         state={appState}
         onStateUpdate={handleStateUpdate}
         onOpenWhatsAppModal={() => setIsWhatsAppModalOpen(true)}
+        onGoHome={() => setActiveTab('dashboard')}
       />
 
       {/* Main App Container */}
@@ -337,10 +338,10 @@ export const App: React.FC = () => {
       </div>
 
       {/* Footer */}
-      <footer style={{ marginTop: '40px', padding: '22px 20px', textAlign: 'center', fontSize: '0.88rem', color: '#E0F2FE', borderTop: '2px solid #0096C7', background: 'linear-gradient(135deg, #072E3D 0%, #0C4356 100%)', boxShadow: '0 -4px 20px rgba(7, 46, 61, 0.3)' }}>
+      <footer style={{ marginTop: '40px', padding: '22px 20px', textAlign: 'center', fontSize: '0.88rem', color: '#E0F2FE', borderTop: '2px solid #48CAE4', background: 'linear-gradient(135deg, #0E5A73 0%, #137A9A 100%)', boxShadow: '0 -4px 20px rgba(14, 90, 115, 0.25)' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
           <span>🪔</span>
-          <strong style={{ color: '#FFFFFF', fontWeight: 800 }}>R.S Towers <span style={{ color: '#FFB703' }}>Ganesh Utsav 2026</span></strong>
+          <strong style={{ color: '#FFFFFF', fontWeight: 800 }}>R.S Towers <span style={{ color: '#FFD166' }}>Ganesh Utsav 2026</span></strong>
         </div>
       </footer>
 

@@ -8,12 +8,14 @@ interface NavbarProps {
   state: AppState;
   onStateUpdate: (newState: AppState) => void;
   onOpenWhatsAppModal: () => void;
+  onGoHome?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   state,
   onStateUpdate,
   onOpenWhatsAppModal,
+  onGoHome,
 }) => {
   const jsonInputRef = useRef<HTMLInputElement>(null);
 
@@ -39,9 +41,9 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="navbar-container" style={{
-      background: 'linear-gradient(135deg, #072E3D 0%, #0C4356 50%, #005F73 100%)',
-      borderBottom: '2px solid #0096C7',
-      boxShadow: '0 4px 25px rgba(7, 46, 61, 0.4)',
+      background: 'linear-gradient(135deg, #0E5A73 0%, #137A9A 50%, #189AB4 100%)',
+      borderBottom: '2px solid #48CAE4',
+      boxShadow: '0 4px 20px rgba(14, 90, 115, 0.25)',
       marginBottom: 0,
       padding: '12px 20px',
       position: 'sticky',
@@ -50,8 +52,12 @@ export const Navbar: React.FC<NavbarProps> = ({
     }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
         
-        {/* Brand Title with Ganapathi Badge */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        {/* Brand Title with Ganapathi Badge (Clickable to Go Home) */}
+        <div
+          onClick={onGoHome}
+          style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: onGoHome ? 'pointer' : 'default', userSelect: 'none' }}
+          title="Go to Dashboard Home"
+        >
           <div className="brand-logo-badge" style={{
             width: '44px',
             height: '44px',
@@ -64,6 +70,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             boxShadow: '0 4px 14px rgba(245, 158, 11, 0.4)',
             overflow: 'hidden',
             flexShrink: 0,
+            transition: 'transform 0.2s ease',
           }}>
             <img
               src={ganeshaBadge}
@@ -74,7 +81,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <h1 className="brand-title-text" style={{ fontSize: '1.25rem', margin: 0, letterSpacing: '-0.3px', fontWeight: 800, color: '#FFFFFF' }}>
-                RS Towers <span style={{ color: '#FFB703', background: 'linear-gradient(135deg, #FFD166 0%, #FFB703 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 2px 8px rgba(255, 183, 3, 0.4))' }}>Ganesh 2026</span>
+                RS Towers <span style={{ color: '#FFD166', background: 'linear-gradient(135deg, #FFE399 0%, #FFD166 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 2px 8px rgba(255, 209, 102, 0.4))' }}>Ganesh 2026</span>
               </h1>
             </div>
           </div>
