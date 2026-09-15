@@ -97,7 +97,7 @@ export const FlatDirectory: React.FC<FlatDirectoryProps> = ({
                 padding: '16px',
                 display: 'flex',
                 flexDirection: 'column',
-                justify: 'space-between',
+                justifyContent: 'space-between',
                 border: isFullyPaid ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(239, 68, 68, 0.4)',
                 background: isFullyPaid ? 'rgba(16, 185, 129, 0.04)' : 'var(--bg-card)',
               }}
