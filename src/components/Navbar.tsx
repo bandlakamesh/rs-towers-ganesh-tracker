@@ -75,7 +75,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Quick Action Buttons */}
-        <div className="no-print" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+        <div className="no-print header-actions-row" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           <button className="app-btn app-btn-whatsapp" onClick={onOpenWhatsAppModal} style={{ padding: '8px 14px', fontSize: '0.84rem' }}>
             <Share2 size={16} /> Share WhatsApp
           </button>
