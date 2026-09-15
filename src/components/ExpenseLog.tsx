@@ -239,8 +239,8 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <div style={{ position: 'relative', width: '200px' }}>
+        <div className="table-header-controls" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+          <div style={{ position: 'relative', flex: '1 1 180px', minWidth: '160px' }}>
             <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
             <input
               type="text"
@@ -256,7 +256,7 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
             className="form-control"
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            style={{ width: '160px' }}
+            style={{ width: '160px', flex: '0 0 auto' }}
           >
             <option value="All">All Categories</option>
             {CATEGORIES.map((cat) => (
@@ -264,7 +264,7 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
             ))}
           </select>
 
-          <button className="app-btn" onClick={handleOpenAdd} style={{ background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)', color: '#FFF' }}>
+          <button className="app-btn" onClick={handleOpenAdd} style={{ background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)', color: '#FFF', flex: '0 0 auto' }}>
             <Plus size={18} /> Record Expense
           </button>
         </div>
@@ -327,72 +327,83 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
 
       {/* Expense Cards / Table */}
       <div className="app-card" style={{ overflowX: 'auto', padding: 0 }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem', minWidth: '820px' }}>
           <thead>
             <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', color: '#1D4ED8', fontFamily: 'var(--font-title)', userSelect: 'none' }}>
-              <th onClick={() => handleSort('category')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+              <th onClick={() => handleSort('category')} style={{ padding: '14px 16px', cursor: 'pointer', whiteSpace: 'nowrap', minWidth: '160px' }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center' }}>Category {renderSortIcon('category')}</span>
               </th>
-              <th onClick={() => handleSort('description')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+              <th onClick={() => handleSort('description')} style={{ padding: '14px 16px', cursor: 'pointer', whiteSpace: 'nowrap', minWidth: '180px' }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center' }}>Description {renderSortIcon('description')}</span>
               </th>
-              <th onClick={() => handleSort('amount')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+              <th onClick={() => handleSort('amount')} style={{ padding: '14px 16px', cursor: 'pointer', whiteSpace: 'nowrap', minWidth: '115px' }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center' }}>Amount {renderSortIcon('amount')}</span>
               </th>
-              <th onClick={() => handleSort('paidBy')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+              <th onClick={() => handleSort('paidBy')} style={{ padding: '14px 16px', cursor: 'pointer', whiteSpace: 'nowrap', minWidth: '160px' }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center' }}>Paid By {renderSortIcon('paidBy')}</span>
               </th>
-              <th onClick={() => handleSort('paymentMode')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+              <th onClick={() => handleSort('paymentMode')} style={{ padding: '14px 16px', cursor: 'pointer', whiteSpace: 'nowrap', minWidth: '95px' }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center' }}>Mode {renderSortIcon('paymentMode')}</span>
               </th>
-              <th onClick={() => handleSort('date')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+              <th onClick={() => handleSort('date')} style={{ padding: '14px 16px', cursor: 'pointer', whiteSpace: 'nowrap', minWidth: '105px' }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center' }}>Date {renderSortIcon('date')}</span>
               </th>
-              <th style={{ padding: '14px 16px' }}>Bill Proof</th>
-              <th style={{ padding: '14px 16px', textAlign: 'right' }}>Actions</th>
+              <th style={{ padding: '14px 16px', whiteSpace: 'nowrap', minWidth: '110px' }}>Bill Proof</th>
+              <th style={{ padding: '14px 16px', textAlign: 'right', whiteSpace: 'nowrap', minWidth: '95px' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {sortedList.map((e) => (
-              <tr key={e.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
-                <td style={{ padding: '12px 16px' }}>
-                  <span style={{ background: '#FEF2F2', color: '#DC2626', border: '1px solid #FECACA', padding: '3px 8px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 600 }}>
+              <tr key={e.id} style={{ borderBottom: '1px solid #F1F5F9', transition: 'background 0.15s ease' }}>
+                <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', background: '#FEF2F2', color: '#DC2626', border: '1px solid #FECACA', padding: '3px 9px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 700, whiteSpace: 'nowrap' }}>
                     {e.category}
                   </span>
                 </td>
-                <td style={{ padding: '12px 16px', fontWeight: 600, color: '#0F172A' }}>{e.description}</td>
-                <td style={{ padding: '12px 16px', fontWeight: 700, color: '#DC2626' }}>
+                <td style={{ padding: '12px 16px', fontWeight: 600, color: '#0F172A', whiteSpace: 'nowrap' }}>{e.description}</td>
+                <td style={{ padding: '12px 16px', fontWeight: 700, color: '#DC2626', whiteSpace: 'nowrap', fontSize: '0.92rem' }}>
                   ₹{e.amount.toLocaleString('en-IN')}
                 </td>
-                <td style={{ padding: '12px 16px', color: '#1D4ED8', fontWeight: 600 }}>
+                <td style={{ padding: '12px 16px', color: '#1D4ED8', fontWeight: 600, whiteSpace: 'nowrap' }}>
                   <span
                     onClick={() => setSelectedMemberFilter(selectedMemberFilter === e.paidBy ? 'All' : e.paidBy)}
-                    style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                    style={{ cursor: 'pointer', textDecoration: 'underline', display: 'inline-flex', alignItems: 'center', whiteSpace: 'nowrap' }}
                     title="Click to filter by this member"
                   >
                     {e.paidBy}
                   </span>
                 </td>
-                <td style={{ padding: '12px 16px' }}>
-                  <span style={{ background: '#EFF6FF', color: '#1D4ED8', padding: '3px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
+                <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
+                  <span style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    padding: '3px 8px',
+                    borderRadius: '5px',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    whiteSpace: 'nowrap',
+                    color: e.paymentMode === 'UPI' ? '#047857' : e.paymentMode === 'Cash' ? '#B45309' : '#1D4ED8',
+                    background: e.paymentMode === 'UPI' ? '#ECFDF5' : e.paymentMode === 'Cash' ? '#FFFBEB' : '#EFF6FF',
+                    border: e.paymentMode === 'UPI' ? '1px solid #A7F3D0' : e.paymentMode === 'Cash' ? '1px solid #FDE68A' : '1px solid #BFDBFE',
+                  }}>
                     {e.paymentMode}
                   </span>
                 </td>
-                <td style={{ padding: '12px 16px', color: 'var(--text-secondary)' }}>{e.date}</td>
-                <td style={{ padding: '12px 16px' }}>
+                <td style={{ padding: '12px 16px', color: 'var(--text-secondary)', whiteSpace: 'nowrap', fontSize: '0.84rem' }}>{e.date}</td>
+                <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
                   {e.billUrl ? (
                     <button
                       className="app-btn app-btn-secondary"
                       onClick={() => setSelectedBillImage(e.billUrl!)}
-                      style={{ padding: '4px 8px', fontSize: '0.75rem' }}
+                      style={{ padding: '4px 8px', fontSize: '0.75rem', whiteSpace: 'nowrap' }}
                     >
                       <Eye size={12} /> View Bill
                     </button>
                   ) : (
-                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem' }}>No Bill</span>
+                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', whiteSpace: 'nowrap' }}>No Bill</span>
                   )}
                 </td>
-                <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                <td style={{ padding: '12px 16px', textAlign: 'right', whiteSpace: 'nowrap' }}>
                   <div style={{ display: 'inline-flex', gap: '8px', alignItems: 'center' }}>
                     <button
                       onClick={() => handleOpenEdit(e)}

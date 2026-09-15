@@ -348,6 +348,17 @@ h1, h2, h3, h4, h5, h6 {
     width: 100% !important;
     justify-content: flex-end !important;
   }
+  .table-header-controls {
+    width: 100% !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+  .table-header-controls > div,
+  .table-header-controls > select,
+  .table-header-controls > button {
+    width: 100% !important;
+  }
 }
 
 /* Desktop navbar adjustments */

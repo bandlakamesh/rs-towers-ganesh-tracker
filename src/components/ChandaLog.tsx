@@ -168,8 +168,8 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <div style={{ position: 'relative', width: '200px' }}>
+        <div className="table-header-controls" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+          <div style={{ position: 'relative', flex: '1 1 180px', minWidth: '160px' }}>
             <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
             <input
               type="text"
@@ -185,7 +185,7 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
             className="form-control"
             value={modeFilter}
             onChange={(e) => setModeFilter(e.target.value)}
-            style={{ width: '130px' }}
+            style={{ width: '130px', flex: '0 0 auto' }}
           >
             <option value="All">All Modes</option>
             <option value="UPI">UPI</option>
@@ -193,7 +193,7 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
             <option value="NetBanking">NetBanking</option>
           </select>
 
-          <button className="app-btn app-btn-primary" onClick={handleOpenAdd}>
+          <button className="app-btn app-btn-primary" onClick={handleOpenAdd} style={{ flex: '0 0 auto' }}>
             <Plus size={18} /> Record Payment
           </button>
         </div>
@@ -201,73 +201,114 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
 
       {/* Chanda Table */}
       <div className="app-card" style={{ overflowX: 'auto', padding: 0 }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem', minWidth: '820px' }}>
           <thead>
             <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', color: '#1D4ED8', fontFamily: 'var(--font-title)', userSelect: 'none' }}>
-              <th onClick={() => handleSort('receiptNo')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+              <th onClick={() => handleSort('receiptNo')} style={{ padding: '14px 16px', cursor: 'pointer', whiteSpace: 'nowrap', minWidth: '135px' }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center' }}>Receipt # {renderSortIcon('receiptNo')}</span>
               </th>
-              <th onClick={() => handleSort('flatNo')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+              <th onClick={() => handleSort('flatNo')} style={{ padding: '14px 16px', cursor: 'pointer', whiteSpace: 'nowrap', minWidth: '105px' }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center' }}>Flat {renderSortIcon('flatNo')}</span>
               </th>
-              <th onClick={() => handleSort('residentName')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+              <th onClick={() => handleSort('residentName')} style={{ padding: '14px 16px', cursor: 'pointer', whiteSpace: 'nowrap', minWidth: '200px' }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center' }}>Resident & Type {renderSortIcon('residentName')}</span>
               </th>
-              <th onClick={() => handleSort('amount')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+              <th onClick={() => handleSort('amount')} style={{ padding: '14px 16px', cursor: 'pointer', whiteSpace: 'nowrap', minWidth: '120px' }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center' }}>Amount {renderSortIcon('amount')}</span>
               </th>
-              <th onClick={() => handleSort('paymentMode')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+              <th onClick={() => handleSort('paymentMode')} style={{ padding: '14px 16px', cursor: 'pointer', whiteSpace: 'nowrap', minWidth: '95px' }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center' }}>Mode {renderSortIcon('paymentMode')}</span>
               </th>
-              <th onClick={() => handleSort('date')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+              <th onClick={() => handleSort('date')} style={{ padding: '14px 16px', cursor: 'pointer', whiteSpace: 'nowrap', minWidth: '110px' }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center' }}>Date {renderSortIcon('date')}</span>
               </th>
-              <th onClick={() => handleSort('notes')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+              <th onClick={() => handleSort('notes')} style={{ padding: '14px 16px', cursor: 'pointer', whiteSpace: 'nowrap', minWidth: '130px' }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center' }}>Notes {renderSortIcon('notes')}</span>
               </th>
-              <th style={{ padding: '14px 16px', textAlign: 'right' }}>Actions</th>
+              <th style={{ padding: '14px 16px', textAlign: 'right', whiteSpace: 'nowrap', minWidth: '125px' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {sortedList.map((c) => {
               const isZeroPending = c.amount === 0 || c.status === 'Pending';
+              const isTenant = c.residentType === 'Tenant';
 
               return (
-                <tr key={c.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
-                  <td style={{ padding: '12px 16px', fontWeight: 600, color: '#1D4ED8' }}>{c.receiptNo}</td>
-                  <td style={{ padding: '12px 16px' }}>
-                    <span style={{ color: '#0F172A', background: '#F1F5F9', border: '1px solid #CBD5E1', padding: '3px 8px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 600 }}>Flat {c.flatNo}</span>
+                <tr key={c.id} style={{ borderBottom: '1px solid #F1F5F9', transition: 'background 0.15s ease' }}>
+                  <td style={{ padding: '12px 16px', fontWeight: 700, color: '#1D4ED8', whiteSpace: 'nowrap', letterSpacing: '0.3px' }}>
+                    {c.receiptNo}
                   </td>
-                  <td style={{ padding: '12px 16px' }}>
-                    <div style={{ fontWeight: 600, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      {c.residentName}
-                      <span style={{ fontSize: '0.7rem', color: c.residentType === 'Tenant' ? '#7C3AED' : '#2563EB', background: c.residentType === 'Tenant' ? '#F3E8FF' : '#EFF6FF', border: '1px solid #CBD5E1', padding: '1px 6px', borderRadius: '4px' }}>
+                  <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
+                    <span style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#1E40AF',
+                      background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)',
+                      border: '1px solid #93C5FD',
+                      padding: '4px 10px',
+                      borderRadius: '8px',
+                      fontSize: '0.8rem',
+                      fontWeight: 700,
+                      whiteSpace: 'nowrap',
+                      boxShadow: '0 1px 2px rgba(37, 99, 235, 0.08)'
+                    }}>
+                      Flat {c.flatNo}
+                    </span>
+                  </td>
+                  <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
+                      <span style={{ fontWeight: 600, color: '#0F172A' }}>{c.residentName}</span>
+                      <span style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        fontSize: '0.72rem',
+                        fontWeight: 700,
+                        whiteSpace: 'nowrap',
+                        color: isTenant ? '#6D28D9' : '#4338CA',
+                        background: isTenant ? 'linear-gradient(135deg, #F3E8FF 0%, #EDE9FE 100%)' : 'linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%)',
+                        border: isTenant ? '1px solid #DDD6FE' : '1px solid #C7D2FE',
+                        padding: '2px 8px',
+                        borderRadius: '6px',
+                        boxShadow: '0 1px 2px rgba(0,0,0,0.04)'
+                      }}>
                         {c.residentType || 'Owner'}
                       </span>
                     </div>
                   </td>
-                  <td style={{ padding: '12px 16px', fontWeight: 700 }}>
+                  <td style={{ padding: '12px 16px', fontWeight: 700, whiteSpace: 'nowrap' }}>
                     {isZeroPending ? (
-                      <span style={{ color: '#DC2626', background: '#FEF2F2', border: '1px solid #FECACA', padding: '3px 8px', borderRadius: '6px', fontSize: '0.78rem' }}>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', color: '#DC2626', background: '#FEF2F2', border: '1px solid #FECACA', padding: '3px 9px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 700, whiteSpace: 'nowrap' }}>
                         ₹0 (Pending)
                       </span>
                     ) : (
-                      <span style={{ color: '#059669' }}>₹{c.amount.toLocaleString('en-IN')}</span>
+                      <span style={{ color: '#059669', fontSize: '0.92rem', whiteSpace: 'nowrap' }}>₹{c.amount.toLocaleString('en-IN')}</span>
                     )}
                   </td>
-                  <td style={{ padding: '12px 16px' }}>
-                    <span style={{ background: '#EFF6FF', color: '#1D4ED8', padding: '3px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
+                  <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
+                    <span style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      padding: '3px 8px',
+                      borderRadius: '5px',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      whiteSpace: 'nowrap',
+                      color: c.paymentMode === 'UPI' ? '#047857' : c.paymentMode === 'Cash' ? '#B45309' : '#1D4ED8',
+                      background: c.paymentMode === 'UPI' ? '#ECFDF5' : c.paymentMode === 'Cash' ? '#FFFBEB' : '#EFF6FF',
+                      border: c.paymentMode === 'UPI' ? '1px solid #A7F3D0' : c.paymentMode === 'Cash' ? '1px solid #FDE68A' : '1px solid #BFDBFE',
+                    }}>
                       {c.paymentMode}
                     </span>
                   </td>
-                  <td style={{ padding: '12px 16px', color: 'var(--text-secondary)' }}>{c.date}</td>
-                  <td style={{ padding: '12px 16px', color: 'var(--text-secondary)', fontSize: '0.82rem' }}>{c.notes || '-'}</td>
-                  <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                  <td style={{ padding: '12px 16px', color: 'var(--text-secondary)', whiteSpace: 'nowrap', fontSize: '0.84rem' }}>{c.date}</td>
+                  <td style={{ padding: '12px 16px', color: 'var(--text-secondary)', fontSize: '0.82rem', whiteSpace: 'nowrap', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.notes || '-'}</td>
+                  <td style={{ padding: '12px 16px', textAlign: 'right', whiteSpace: 'nowrap' }}>
                     <div style={{ display: 'inline-flex', gap: '8px', alignItems: 'center' }}>
                       {isZeroPending && (
                         <button
                           onClick={() => handleSendReminder(c)}
-                          style={{ background: '#ECFDF5', border: '1px solid #A7F3D0', color: '#059669', cursor: 'pointer', padding: '4px 8px', borderRadius: '6px', display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', fontWeight: 700 }}
+                          style={{ background: '#ECFDF5', border: '1px solid #A7F3D0', color: '#059669', cursor: 'pointer', padding: '4px 8px', borderRadius: '6px', display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', fontWeight: 700, whiteSpace: 'nowrap' }}
                           title="Send WhatsApp Reminder"
                         >
                           <Send size={13} /> Reminder
