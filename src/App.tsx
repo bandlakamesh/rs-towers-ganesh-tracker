@@ -148,11 +148,6 @@ export const App: React.FC = () => {
     syncToCloudRemote(newState);
   };
 
-  const handleSelectFlatPayment = (flatNo: string, residentName: string) => {
-    setPrefillFlatPayment({ flatNo, residentName });
-    setActiveTab('chanda');
-  };
-
   const handleFABClick = () => {
     setActiveTab('expenses');
     setExpenseModalTrigger((prev) => prev + 1);
