@@ -225,16 +225,16 @@ h1, h2, h3, h4, h5, h6 {
   left: 0;
   right: 0;
   height: 70px;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(7, 46, 61, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid #E2E8F0;
+  border-top: 1px solid #0096C7;
   display: flex;
   align-items: center;
   justify-content: space-around;
   z-index: 950;
   padding: 0 10px;
-  box-shadow: 0 -4px 25px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 -4px 25px rgba(0, 0, 0, 0.25);
 }
 
 .bottom-nav-item {
@@ -244,7 +244,7 @@ h1, h2, h3, h4, h5, h6 {
   gap: 4px;
   background: none;
   border: none;
-  color: var(--text-secondary);
+  color: #94A3B8;
   font-size: 0.72rem;
   font-weight: 600;
   cursor: pointer;
@@ -254,8 +254,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .bottom-nav-item.active {
-  color: var(--primary-blue);
-  font-weight: 700;
+  color: #FFB703;
+  font-weight: 800;
+}
+
+.bottom-nav-item.active svg {
+  color: #FFB703;
+  transform: translateY(-2px);
 }
 
 .bottom-nav-item.active svg {
@@ -454,8 +459,28 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0 auto !important;
   }
   .header-actions-row {
-    width: 100% !important;
+    width: auto !important;
     justify-content: flex-end !important;
+    flex-wrap: nowrap !important;
+    gap: 6px !important;
+  }
+  .btn-label-desktop {
+    display: none !important;
+  }
+  .nav-btn-compact {
+    padding: 7px 10px !important;
+    font-size: 0.78rem !important;
+    border-radius: 10px !important;
+  }
+  .navbar-container {
+    padding: 10px 14px !important;
+  }
+  .brand-logo-badge {
+    width: 38px !important;
+    height: 38px !important;
+  }
+  .brand-title-text {
+    font-size: 1.05rem !important;
   }
 }
 

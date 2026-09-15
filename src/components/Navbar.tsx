@@ -38,32 +38,30 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <header style={{
-      background: 'rgba(255, 255, 255, 0.82)',
-      backdropFilter: 'blur(20px)',
-      WebkitBackdropFilter: 'blur(20px)',
-      borderBottom: '1px solid rgba(255, 255, 255, 0.5)',
-      boxShadow: '0 4px 20px rgba(0, 50, 80, 0.05)',
+    <header className="navbar-container" style={{
+      background: 'linear-gradient(135deg, #072E3D 0%, #0C4356 50%, #005F73 100%)',
+      borderBottom: '2px solid #0096C7',
+      boxShadow: '0 4px 25px rgba(7, 46, 61, 0.4)',
       marginBottom: 0,
-      padding: '14px 20px',
+      padding: '12px 20px',
       position: 'sticky',
       top: 0,
       zIndex: 900,
     }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
         
         {/* Brand Title with Ganapathi Badge */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <div style={{
-            width: '46px',
-            height: '46px',
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div className="brand-logo-badge" style={{
+            width: '44px',
+            height: '44px',
             borderRadius: '50%',
             background: 'linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%)',
             border: '2px solid #FDBA74',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 4px 14px rgba(245, 158, 11, 0.35)',
+            boxShadow: '0 4px 14px rgba(245, 158, 11, 0.4)',
             overflow: 'hidden',
             flexShrink: 0,
           }}>
@@ -74,29 +72,29 @@ export const Navbar: React.FC<NavbarProps> = ({
             />
           </div>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <h1 style={{ fontSize: '1.25rem', margin: 0, letterSpacing: '-0.3px', fontWeight: 800 }}>
-                RS Towers <span style={{ color: 'var(--gold-primary)', background: 'linear-gradient(135deg, #D97706 0%, #EA580C 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Ganesh 2026</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <h1 className="brand-title-text" style={{ fontSize: '1.25rem', margin: 0, letterSpacing: '-0.3px', fontWeight: 800, color: '#FFFFFF' }}>
+                RS Towers <span style={{ color: '#FFB703', background: 'linear-gradient(135deg, #FFD166 0%, #FFB703 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 2px 8px rgba(255, 183, 3, 0.4))' }}>Ganesh 2026</span>
               </h1>
             </div>
           </div>
         </div>
 
         {/* Quick Action Buttons */}
-        <div className="no-print header-actions-row" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-          <button className="app-btn app-btn-whatsapp" onClick={onOpenWhatsAppModal} style={{ padding: '8px 14px', fontSize: '0.84rem' }}>
-            <Share2 size={16} /> Share WhatsApp
+        <div className="no-print header-actions-row" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button className="app-btn app-btn-whatsapp nav-btn-compact" onClick={onOpenWhatsAppModal} style={{ padding: '8px 14px', fontSize: '0.84rem' }}>
+            <Share2 size={16} /> <span className="btn-label-desktop">Share WhatsApp</span>
           </button>
 
-          <button className="app-btn app-btn-primary" onClick={handlePrintPDF} style={{ background: 'linear-gradient(135deg, #0096C7 0%, #0077B6 100%)', color: '#FFF', padding: '8px 14px', fontSize: '0.84rem', boxShadow: '0 4px 14px rgba(0, 150, 199, 0.25)' }}>
-            <Printer size={16} /> Print / Download PDF
+          <button className="app-btn nav-btn-compact" onClick={handlePrintPDF} style={{ background: 'linear-gradient(135deg, #00B4D8 0%, #0096C7 100%)', color: '#FFF', padding: '8px 14px', fontSize: '0.84rem', boxShadow: '0 4px 14px rgba(0, 180, 216, 0.3)' }}>
+            <Printer size={16} /> <span className="btn-label-desktop">Print / Download PDF</span>
           </button>
 
-          <button className="app-btn app-btn-secondary" onClick={handleExport} style={{ padding: '8px 12px', fontSize: '0.84rem', background: 'rgba(255, 255, 255, 0.75)', borderColor: '#B2D8E5', color: '#0077B6' }} title="Download JSON Backup">
+          <button className="app-btn nav-btn-compact" onClick={handleExport} style={{ padding: '8px 12px', fontSize: '0.84rem', background: 'rgba(255, 255, 255, 0.12)', border: '1px solid rgba(255, 255, 255, 0.25)', color: '#E0F2FE' }} title="Download JSON Backup">
             <Download size={16} />
           </button>
 
-          <button className="app-btn app-btn-secondary" onClick={() => jsonInputRef.current?.click()} style={{ padding: '8px 12px', fontSize: '0.84rem', background: 'rgba(255, 255, 255, 0.75)', borderColor: '#B2D8E5', color: '#0077B6' }} title="Restore JSON Backup">
+          <button className="app-btn nav-btn-compact" onClick={() => jsonInputRef.current?.click()} style={{ padding: '8px 12px', fontSize: '0.84rem', background: 'rgba(255, 255, 255, 0.12)', border: '1px solid rgba(255, 255, 255, 0.25)', color: '#E0F2FE' }} title="Restore JSON Backup">
             <Upload size={16} />
           </button>
 
