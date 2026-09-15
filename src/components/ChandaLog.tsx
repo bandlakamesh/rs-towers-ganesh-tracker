@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Pencil, Receipt, Search } from 'lucide-react';
+import { Plus, Trash2, Pencil, Send, Receipt, Search } from 'lucide-react';
 import type { ChandaRecord, PaymentMode } from '../types';
+import { generateWhatsAppReminderText, openWhatsAppShareLink } from '../utils/whatsappFormatter';
 
 interface ChandaLogProps {
   chandaList: ChandaRecord[];
   onAddChanda: (record: Omit<ChandaRecord, 'id' | 'createdAt'>) => void;
   onEditChanda: (record: ChandaRecord) => void;
   onDeleteChanda: (id: string) => void;
-  prefillFlatNo?: string;
-  prefillResidentName?: string;
 }
 
 export const ChandaLog: React.FC<ChandaLogProps> = ({
@@ -16,8 +15,6 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
   onAddChanda,
   onEditChanda,
   onDeleteChanda,
-  prefillFlatNo = '',
-  prefillResidentName = '',
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<ChandaRecord | null>(null);
@@ -25,9 +22,10 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
   const [modeFilter, setModeFilter] = useState<string>('All');
 
   // Form State
-  const [flatNo, setFlatNo] = useState(prefillFlatNo || '101');
-  const [residentName, setResidentName] = useState(prefillResidentName || '');
-  const [amount, setAmount] = useState<number>(2500);
+  const [flatNo, setFlatNo] = useState('101');
+  const [residentName, setResidentName] = useState('');
+  const [residentType, setResidentType] = useState<'Owner' | 'Tenant'>('Owner');
+  const [amount, setAmount] = useState<number>(3000);
   const [paymentMode, setPaymentMode] = useState<PaymentMode>('UPI');
   const [receiptNo, setReceiptNo] = useState(`RSG-2026-${String(chandaList.length + 1).padStart(3, '0')}`);
   const [notes, setNotes] = useState('');
@@ -35,9 +33,10 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
 
   const handleOpenAdd = () => {
     setEditingRecord(null);
-    setFlatNo(prefillFlatNo || '101');
-    setResidentName(prefillResidentName || '');
-    setAmount(2500);
+    setFlatNo('101');
+    setResidentName('');
+    setResidentType('Owner');
+    setAmount(3000);
     setPaymentMode('UPI');
     setReceiptNo(`RSG-2026-${String(chandaList.length + 1).padStart(3, '0')}`);
     setNotes('');
@@ -49,6 +48,7 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
     setEditingRecord(record);
     setFlatNo(record.flatNo);
     setResidentName(record.residentName);
+    setResidentType(record.residentType || 'Owner');
     setAmount(record.amount);
     setPaymentMode(record.paymentMode);
     setReceiptNo(record.receiptNo);
@@ -57,21 +57,31 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
     setIsModalOpen(true);
   };
 
+  const handleSendReminder = (record: ChandaRecord) => {
+    const dueAmount = 3000 - record.amount;
+    const msg = generateWhatsAppReminderText(record.flatNo, record.residentName, dueAmount > 0 ? dueAmount : 3000);
+    openWhatsAppShareLink(msg);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!flatNo || !residentName || amount <= 0) {
+    if (!flatNo || !residentName || amount < 0) {
       alert('Please fill out Flat No, Resident Name, and a valid Amount.');
       return;
     }
+
+    const isPending = Number(amount) === 0;
 
     if (editingRecord) {
       onEditChanda({
         ...editingRecord,
         flatNo,
         residentName,
+        residentType,
         amount: Number(amount),
         date,
         paymentMode,
+        status: isPending ? 'Pending' : 'Received',
         receiptNo: receiptNo || editingRecord.receiptNo,
         notes,
       });
@@ -79,10 +89,11 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
       onAddChanda({
         flatNo,
         residentName,
+        residentType,
         amount: Number(amount),
         date,
         paymentMode,
-        status: 'Received',
+        status: isPending ? 'Pending' : 'Received',
         receiptNo: receiptNo || `RSG-${Date.now().toString().slice(-6)}`,
         notes,
       });
@@ -155,7 +166,7 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
             <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', color: '#1D4ED8', fontFamily: 'var(--font-title)' }}>
               <th style={{ padding: '14px 16px' }}>Receipt #</th>
               <th style={{ padding: '14px 16px' }}>Flat</th>
-              <th style={{ padding: '14px 16px' }}>Resident Name</th>
+              <th style={{ padding: '14px 16px' }}>Resident & Type</th>
               <th style={{ padding: '14px 16px' }}>Amount</th>
               <th style={{ padding: '14px 16px' }}>Mode</th>
               <th style={{ padding: '14px 16px' }}>Date</th>
@@ -164,47 +175,76 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
             </tr>
           </thead>
           <tbody>
-            {filteredList.map((c) => (
-              <tr key={c.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
-                <td style={{ padding: '12px 16px', fontWeight: 600, color: '#1D4ED8' }}>{c.receiptNo}</td>
-                <td style={{ padding: '12px 16px' }}>
-                  <span style={{ color: '#0F172A', background: '#F1F5F9', border: '1px solid #CBD5E1', padding: '3px 8px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 600 }}>Flat {c.flatNo}</span>
-                </td>
-                <td style={{ padding: '12px 16px', fontWeight: 600, color: '#0F172A' }}>{c.residentName}</td>
-                <td style={{ padding: '12px 16px', fontWeight: 700, color: '#059669' }}>
-                  ₹{c.amount.toLocaleString('en-IN')}
-                </td>
-                <td style={{ padding: '12px 16px' }}>
-                  <span style={{ background: '#EFF6FF', color: '#1D4ED8', padding: '3px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
-                    {c.paymentMode}
-                  </span>
-                </td>
-                <td style={{ padding: '12px 16px', color: 'var(--text-secondary)' }}>{c.date}</td>
-                <td style={{ padding: '12px 16px', color: 'var(--text-secondary)', fontSize: '0.82rem' }}>{c.notes || '-'}</td>
-                <td style={{ padding: '12px 16px', textAlign: 'right' }}>
-                  <div style={{ display: 'inline-flex', gap: '8px', alignItems: 'center' }}>
-                    <button
-                      onClick={() => handleOpenEdit(c)}
-                      style={{ background: 'none', border: 'none', color: '#2563EB', cursor: 'pointer', padding: '4px' }}
-                      title="Edit Donation"
-                    >
-                      <Pencil size={15} />
-                    </button>
-                    <button
-                      onClick={() => {
-                        if (confirm(`Delete receipt ${c.receiptNo} for Flat ${c.flatNo}?`)) {
-                          onDeleteChanda(c.id);
-                        }
-                      }}
-                      style={{ background: 'none', border: 'none', color: '#DC2626', cursor: 'pointer', padding: '4px' }}
-                      title="Delete Record"
-                    >
-                      <Trash2 size={15} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {filteredList.map((c) => {
+              const isZeroPending = c.amount === 0 || c.status === 'Pending';
+
+              return (
+                <tr key={c.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
+                  <td style={{ padding: '12px 16px', fontWeight: 600, color: '#1D4ED8' }}>{c.receiptNo}</td>
+                  <td style={{ padding: '12px 16px' }}>
+                    <span style={{ color: '#0F172A', background: '#F1F5F9', border: '1px solid #CBD5E1', padding: '3px 8px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 600 }}>Flat {c.flatNo}</span>
+                  </td>
+                  <td style={{ padding: '12px 16px' }}>
+                    <div style={{ fontWeight: 600, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      {c.residentName}
+                      <span style={{ fontSize: '0.7rem', color: c.residentType === 'Tenant' ? '#7C3AED' : '#2563EB', background: c.residentType === 'Tenant' ? '#F3E8FF' : '#EFF6FF', border: '1px solid #CBD5E1', padding: '1px 6px', borderRadius: '4px' }}>
+                        {c.residentType || 'Owner'}
+                      </span>
+                    </div>
+                  </td>
+                  <td style={{ padding: '12px 16px', fontWeight: 700 }}>
+                    {isZeroPending ? (
+                      <span style={{ color: '#DC2626', background: '#FEF2F2', border: '1px solid #FECACA', padding: '3px 8px', borderRadius: '6px', fontSize: '0.78rem' }}>
+                        ₹0 (Pending)
+                      </span>
+                    ) : (
+                      <span style={{ color: '#059669' }}>₹{c.amount.toLocaleString('en-IN')}</span>
+                    )}
+                  </td>
+                  <td style={{ padding: '12px 16px' }}>
+                    <span style={{ background: '#EFF6FF', color: '#1D4ED8', padding: '3px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
+                      {c.paymentMode}
+                    </span>
+                  </td>
+                  <td style={{ padding: '12px 16px', color: 'var(--text-secondary)' }}>{c.date}</td>
+                  <td style={{ padding: '12px 16px', color: 'var(--text-secondary)', fontSize: '0.82rem' }}>{c.notes || '-'}</td>
+                  <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                    <div style={{ display: 'inline-flex', gap: '8px', alignItems: 'center' }}>
+                      {/* WhatsApp Reminder Button shown for 0 amount / pending records */}
+                      {isZeroPending && (
+                        <button
+                          onClick={() => handleSendReminder(c)}
+                          style={{ background: '#ECFDF5', border: '1px solid #A7F3D0', color: '#059669', cursor: 'pointer', padding: '4px 8px', borderRadius: '6px', display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', fontWeight: 700 }}
+                          title="Send WhatsApp Reminder"
+                        >
+                          <Send size={13} /> Reminder
+                        </button>
+                      )}
+
+                      <button
+                        onClick={() => handleOpenEdit(c)}
+                        style={{ background: 'none', border: 'none', color: '#2563EB', cursor: 'pointer', padding: '4px' }}
+                        title="Edit Donation"
+                      >
+                        <Pencil size={15} />
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          if (confirm(`Delete receipt ${c.receiptNo} for Flat ${c.flatNo}?`)) {
+                            onDeleteChanda(c.id);
+                          }
+                        }}
+                        style={{ background: 'none', border: 'none', color: '#DC2626', cursor: 'pointer', padding: '4px' }}
+                        title="Delete Record"
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
 
             {filteredList.length === 0 && (
               <tr>
@@ -235,33 +275,45 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
                     value={flatNo}
                     onChange={(e) => setFlatNo(e.target.value)}
                     required
-                    placeholder="e.g. 101, 202"
+                    placeholder="e.g. 101, 102, 202"
                   />
                 </div>
 
                 <div className="form-group">
-                  <label>Resident Name</label>
-                  <input
-                    type="text"
+                  <label>Resident Type</label>
+                  <select
                     className="form-control"
-                    value={residentName}
-                    onChange={(e) => setResidentName(e.target.value)}
-                    required
-                    placeholder="Full Name"
-                  />
+                    value={residentType}
+                    onChange={(e: any) => setResidentType(e.target.value)}
+                  >
+                    <option value="Owner">Owner</option>
+                    <option value="Tenant">Tenant</option>
+                  </select>
                 </div>
+              </div>
+
+              <div className="form-group">
+                <label>Resident Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={residentName}
+                  onChange={(e) => setResidentName(e.target.value)}
+                  required
+                  placeholder="Full Name"
+                />
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div className="form-group">
-                  <label>Amount (₹)</label>
+                  <label>Amount (₹) - Enter 0 for Pending</label>
                   <input
                     type="number"
                     className="form-control"
                     value={amount}
                     onChange={(e) => setAmount(Number(e.target.value))}
                     required
-                    min={1}
+                    min={0}
                   />
                 </div>
 
@@ -311,7 +363,7 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
                   className="form-control"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="e.g. UPI Ref #987123 or Cash handed to Treasurer"
+                  placeholder="e.g. Pending payment or UPI Ref #987123"
                 />
               </div>
 

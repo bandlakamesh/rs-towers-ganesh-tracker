@@ -5,6 +5,7 @@ export interface ChandaRecord {
   id: string;
   flatNo: string;
   residentName: string;
+  residentType?: 'Owner' | 'Tenant';
   amount: number;
   date: string;
   paymentMode: PaymentMode;
