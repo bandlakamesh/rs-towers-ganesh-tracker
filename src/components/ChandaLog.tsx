@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Pencil, Send, Receipt, Search } from 'lucide-react';
+import { Plus, Trash2, Pencil, Send, Receipt, Search, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import type { ChandaRecord, PaymentMode } from '../types';
 import { generateWhatsAppReminderText, openWhatsAppShareLink } from '../utils/whatsappFormatter';
 
@@ -9,6 +9,8 @@ interface ChandaLogProps {
   onEditChanda: (record: ChandaRecord) => void;
   onDeleteChanda: (id: string) => void;
 }
+
+type SortField = 'receiptNo' | 'flatNo' | 'residentName' | 'amount' | 'paymentMode' | 'date' | 'notes';
 
 export const ChandaLog: React.FC<ChandaLogProps> = ({
   chandaList,
@@ -21,6 +23,10 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [modeFilter, setModeFilter] = useState<string>('All');
 
+  // Sorting state
+  const [sortField, setSortField] = useState<SortField>('receiptNo');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
   // Form State
   const [flatNo, setFlatNo] = useState('101');
   const [residentName, setResidentName] = useState('');
@@ -30,6 +36,15 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
   const [receiptNo, setReceiptNo] = useState(`RSG-2026-${String(chandaList.length + 1).padStart(3, '0')}`);
   const [notes, setNotes] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortOrder('asc');
+    }
+  };
 
   const handleOpenAdd = () => {
     setEditingRecord(null);
@@ -114,6 +129,32 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
     return matchesSearch && matchesMode;
   });
 
+  const sortedList = [...filteredList].sort((a, b) => {
+    let valA: any = a[sortField] ?? '';
+    let valB: any = b[sortField] ?? '';
+
+    if (sortField === 'flatNo') {
+      valA = parseInt(String(valA).replace(/\D/g, ''), 10) || 0;
+      valB = parseInt(String(valB).replace(/\D/g, ''), 10) || 0;
+    } else if (typeof valA === 'string') {
+      valA = valA.toLowerCase();
+      valB = String(valB).toLowerCase();
+    }
+
+    if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
+    if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  const renderSortIcon = (field: SortField) => {
+    if (sortField !== field) return <ArrowUpDown size={13} style={{ opacity: 0.4, marginLeft: '4px' }} />;
+    return sortOrder === 'asc' ? (
+      <ArrowUp size={13} style={{ color: '#2563EB', marginLeft: '4px' }} />
+    ) : (
+      <ArrowDown size={13} style={{ color: '#2563EB', marginLeft: '4px' }} />
+    );
+  };
+
   return (
     <div style={{ marginBottom: '32px' }}>
       
@@ -124,7 +165,7 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
             <Receipt style={{ color: '#2563EB' }} /> Chanda Collection Log
           </h2>
           <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0 }}>
-            List of all resident contributions & digital receipts
+            List of all resident contributions & digital receipts (Click table headers to sort)
           </p>
         </div>
 
@@ -163,19 +204,33 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
       <div className="app-card" style={{ overflowX: 'auto', padding: 0 }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
           <thead>
-            <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', color: '#1D4ED8', fontFamily: 'var(--font-title)' }}>
-              <th style={{ padding: '14px 16px' }}>Receipt #</th>
-              <th style={{ padding: '14px 16px' }}>Flat</th>
-              <th style={{ padding: '14px 16px' }}>Resident & Type</th>
-              <th style={{ padding: '14px 16px' }}>Amount</th>
-              <th style={{ padding: '14px 16px' }}>Mode</th>
-              <th style={{ padding: '14px 16px' }}>Date</th>
-              <th style={{ padding: '14px 16px' }}>Notes</th>
+            <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', color: '#1D4ED8', fontFamily: 'var(--font-title)', userSelect: 'none' }}>
+              <th onClick={() => handleSort('receiptNo')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center' }}>Receipt # {renderSortIcon('receiptNo')}</span>
+              </th>
+              <th onClick={() => handleSort('flatNo')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center' }}>Flat {renderSortIcon('flatNo')}</span>
+              </th>
+              <th onClick={() => handleSort('residentName')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center' }}>Resident & Type {renderSortIcon('residentName')}</span>
+              </th>
+              <th onClick={() => handleSort('amount')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center' }}>Amount {renderSortIcon('amount')}</span>
+              </th>
+              <th onClick={() => handleSort('paymentMode')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center' }}>Mode {renderSortIcon('paymentMode')}</span>
+              </th>
+              <th onClick={() => handleSort('date')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center' }}>Date {renderSortIcon('date')}</span>
+              </th>
+              <th onClick={() => handleSort('notes')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center' }}>Notes {renderSortIcon('notes')}</span>
+              </th>
               <th style={{ padding: '14px 16px', textAlign: 'right' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filteredList.map((c) => {
+            {sortedList.map((c) => {
               const isZeroPending = c.amount === 0 || c.status === 'Pending';
 
               return (
@@ -210,7 +265,6 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
                   <td style={{ padding: '12px 16px', color: 'var(--text-secondary)', fontSize: '0.82rem' }}>{c.notes || '-'}</td>
                   <td style={{ padding: '12px 16px', textAlign: 'right' }}>
                     <div style={{ display: 'inline-flex', gap: '8px', alignItems: 'center' }}>
-                      {/* WhatsApp Reminder Button shown for 0 amount / pending records */}
                       {isZeroPending && (
                         <button
                           onClick={() => handleSendReminder(c)}
@@ -246,7 +300,7 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
               );
             })}
 
-            {filteredList.length === 0 && (
+            {sortedList.length === 0 && (
               <tr>
                 <td colSpan={8} style={{ padding: '24px', textAlign: 'center', color: 'var(--text-secondary)' }}>
                   No Chanda records found.

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Pencil, Receipt, Search, Eye } from 'lucide-react';
+import { Plus, Trash2, Pencil, Receipt, Search, Eye, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import type { ExpenseRecord, ExpenseCategory, PaymentMode } from '../types';
 
 interface ExpenseLogProps {
@@ -9,6 +9,8 @@ interface ExpenseLogProps {
   onDeleteExpense: (id: string) => void;
   openAddModalTrigger?: number;
 }
+
+type SortField = 'category' | 'description' | 'amount' | 'paidBy' | 'paymentMode' | 'date';
 
 const CATEGORIES: ExpenseCategory[] = [
   'Pandal & Decoration',
@@ -34,6 +36,10 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('All');
 
+  // Sorting state
+  const [sortField, setSortField] = useState<SortField>('date');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+
   // Form state
   const [category, setCategory] = useState<ExpenseCategory>('Pandal & Decoration');
   const [description, setDescription] = useState('');
@@ -48,6 +54,15 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
       handleOpenAdd();
     }
   }, [openAddModalTrigger]);
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortOrder('asc');
+    }
+  };
 
   const handleOpenAdd = () => {
     setEditingRecord(null);
@@ -130,6 +145,29 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
     return matchesSearch && matchesCategory;
   });
 
+  const sortedList = [...filteredList].sort((a, b) => {
+    let valA: any = a[sortField] ?? '';
+    let valB: any = b[sortField] ?? '';
+
+    if (typeof valA === 'string') {
+      valA = valA.toLowerCase();
+      valB = String(valB).toLowerCase();
+    }
+
+    if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
+    if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  const renderSortIcon = (field: SortField) => {
+    if (sortField !== field) return <ArrowUpDown size={13} style={{ opacity: 0.4, marginLeft: '4px' }} />;
+    return sortOrder === 'asc' ? (
+      <ArrowUp size={13} style={{ color: '#2563EB', marginLeft: '4px' }} />
+    ) : (
+      <ArrowDown size={13} style={{ color: '#2563EB', marginLeft: '4px' }} />
+    );
+  };
+
   return (
     <div style={{ marginBottom: '32px' }}>
       
@@ -140,7 +178,7 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
             <Receipt style={{ color: '#DC2626' }} /> Ganesh Utsav Expense Register
           </h2>
           <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0 }}>
-            Categorized expenses paid by committee members with bill photo proofs
+            Categorized expenses paid by committee members with bill photo proofs (Click table headers to sort)
           </p>
         </div>
 
@@ -179,19 +217,31 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
       <div className="app-card" style={{ overflowX: 'auto', padding: 0 }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
           <thead>
-            <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', color: '#1D4ED8', fontFamily: 'var(--font-title)' }}>
-              <th style={{ padding: '14px 16px' }}>Category</th>
-              <th style={{ padding: '14px 16px' }}>Description</th>
-              <th style={{ padding: '14px 16px' }}>Amount</th>
-              <th style={{ padding: '14px 16px' }}>Paid By</th>
-              <th style={{ padding: '14px 16px' }}>Mode</th>
-              <th style={{ padding: '14px 16px' }}>Date</th>
+            <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', color: '#1D4ED8', fontFamily: 'var(--font-title)', userSelect: 'none' }}>
+              <th onClick={() => handleSort('category')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center' }}>Category {renderSortIcon('category')}</span>
+              </th>
+              <th onClick={() => handleSort('description')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center' }}>Description {renderSortIcon('description')}</span>
+              </th>
+              <th onClick={() => handleSort('amount')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center' }}>Amount {renderSortIcon('amount')}</span>
+              </th>
+              <th onClick={() => handleSort('paidBy')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center' }}>Paid By {renderSortIcon('paidBy')}</span>
+              </th>
+              <th onClick={() => handleSort('paymentMode')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center' }}>Mode {renderSortIcon('paymentMode')}</span>
+              </th>
+              <th onClick={() => handleSort('date')} style={{ padding: '14px 16px', cursor: 'pointer' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center' }}>Date {renderSortIcon('date')}</span>
+              </th>
               <th style={{ padding: '14px 16px' }}>Bill Proof</th>
               <th style={{ padding: '14px 16px', textAlign: 'right' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filteredList.map((e) => (
+            {sortedList.map((e) => (
               <tr key={e.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
                 <td style={{ padding: '12px 16px' }}>
                   <span style={{ background: '#FEF2F2', color: '#DC2626', border: '1px solid #FECACA', padding: '3px 8px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 600 }}>
@@ -247,7 +297,7 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
               </tr>
             ))}
 
-            {filteredList.length === 0 && (
+            {sortedList.length === 0 && (
               <tr>
                 <td colSpan={8} style={{ padding: '24px', textAlign: 'center', color: 'var(--text-secondary)' }}>
                   No expense records found.
