@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Pencil, Receipt, Search, Eye, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { Plus, Trash2, Pencil, Receipt, Search, Eye, ArrowUpDown, ArrowUp, ArrowDown, Printer } from 'lucide-react';
 import type { ExpenseRecord, ExpenseCategory, PaymentMode } from '../types';
 
 interface ExpenseLogProps {
@@ -206,7 +206,11 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
             ))}
           </select>
 
-          <button className="app-btn" onClick={handleOpenAdd} style={{ background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)', color: '#FFF' }}>
+          <button className="app-btn app-btn-secondary no-print" onClick={() => window.print()}>
+            <Printer size={16} /> Print / PDF
+          </button>
+
+          <button className="app-btn no-print" onClick={handleOpenAdd} style={{ background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)', color: '#FFF' }}>
             <Plus size={18} /> Record Expense
           </button>
         </div>

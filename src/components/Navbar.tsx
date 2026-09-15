@@ -1,8 +1,7 @@
 import React, { useRef } from 'react';
-import { Share2, Download, Upload, FileSpreadsheet } from 'lucide-react';
-import * as XLSX from 'xlsx';
-import type { AppState, ChandaRecord, ExpenseRecord } from '../types';
-import { exportAppStateJSON, importAppStateJSON, syncToCloudRemote, syncFlatsWithChanda } from '../utils/cloudStorage';
+import { Share2, Download, Upload, Printer } from 'lucide-react';
+import type { AppState } from '../types';
+import { exportAppStateJSON, importAppStateJSON } from '../utils/cloudStorage';
 
 interface NavbarProps {
   state: AppState;
@@ -16,7 +15,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenWhatsAppModal,
 }) => {
   const jsonInputRef = useRef<HTMLInputElement>(null);
-  const excelInputRef = useRef<HTMLInputElement>(null);
 
   const handleExport = () => {
     exportAppStateJSON(state);
@@ -34,74 +32,8 @@ export const Navbar: React.FC<NavbarProps> = ({
     }
   };
 
-  const handleExcelImport = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      try {
-        const bstr = evt.target?.result;
-        const wb = XLSX.read(bstr, { type: 'binary' });
-        
-        let newChandaList: ChandaRecord[] = [...state.chandaList];
-        let newExpenseList: ExpenseRecord[] = [...state.expenseList];
-
-        wb.SheetNames.forEach((sheetName) => {
-          const sheet = wb.Sheets[sheetName];
-          const rows: any[] = XLSX.utils.sheet_to_json(sheet);
-
-          rows.forEach((row, idx) => {
-            const flat = row['Flat'] || row['Flat No'] || row['FlatNo'] || row['Unit'];
-            const resident = row['Resident'] || row['Resident Name'] || row['Name'] || row['Owner'];
-            const chandaAmount = row['Amount'] || row['Chanda'] || row['Contribution'] || row['Paid'];
-            
-            if (flat && resident && chandaAmount) {
-              newChandaList.push({
-                id: `chanda-excel-${Date.now()}-${idx}`,
-                flatNo: String(flat),
-                residentName: String(resident),
-                amount: Number(chandaAmount),
-                date: row['Date'] || new Date().toISOString().split('T')[0],
-                paymentMode: row['Mode'] || row['Payment Mode'] || 'UPI',
-                status: 'Received',
-                receiptNo: row['Receipt'] || `RSG-EXCEL-${idx + 1}`,
-                notes: row['Notes'] || 'Imported from Excel',
-                createdAt: Date.now() + idx,
-              });
-            }
-
-            const expDesc = row['Description'] || row['Expense'] || row['Item'];
-            const expAmount = row['Expense Amount'] || row['Cost'] || (row['Amount'] && !flat ? row['Amount'] : null);
-            if (expDesc && expAmount) {
-              newExpenseList.push({
-                id: `exp-excel-${Date.now()}-${idx}`,
-                category: row['Category'] || 'Miscellaneous',
-                description: String(expDesc),
-                amount: Number(expAmount),
-                paidBy: row['Paid By'] || row['PaidBy'] || 'Committee',
-                date: row['Date'] || new Date().toISOString().split('T')[0],
-                paymentMode: row['Mode'] || 'UPI',
-                createdAt: Date.now() + idx,
-              });
-            }
-          });
-        });
-
-        const newState: AppState = syncFlatsWithChanda({
-          ...state,
-          chandaList: newChandaList,
-          expenseList: newExpenseList,
-          lastUpdated: Date.now(),
-        });
-
-        onStateUpdate(newState);
-        syncToCloudRemote(newState);
-      } catch (err: any) {
-        console.error('Error reading Excel file:', err);
-      }
-    };
-    reader.readAsBinaryString(file);
+  const handlePrintPDF = () => {
+    window.print();
   };
 
   return (
@@ -136,13 +68,13 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Quick Action Buttons */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+        <div className="no-print" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           <button className="app-btn app-btn-whatsapp" onClick={onOpenWhatsAppModal} style={{ padding: '8px 14px', fontSize: '0.84rem' }}>
             <Share2 size={16} /> Share WhatsApp
           </button>
 
-          <button className="app-btn app-btn-primary" onClick={() => excelInputRef.current?.click()} style={{ background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)', color: '#FFF', padding: '8px 14px', fontSize: '0.84rem' }}>
-            <FileSpreadsheet size={16} /> Excel Import
+          <button className="app-btn app-btn-primary" onClick={handlePrintPDF} style={{ background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)', color: '#FFF', padding: '8px 14px', fontSize: '0.84rem' }}>
+            <Printer size={16} /> Print / Download PDF
           </button>
 
           <button className="app-btn app-btn-secondary" onClick={handleExport} style={{ padding: '8px 12px', fontSize: '0.84rem' }} title="Download JSON Backup">
@@ -159,14 +91,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             ref={jsonInputRef}
             onChange={handleJSONFileChange}
             accept=".json"
-            style={{ display: 'none' }}
-          />
-
-          <input
-            type="file"
-            ref={excelInputRef}
-            onChange={handleExcelImport}
-            accept=".xlsx, .xls, .csv"
             style={{ display: 'none' }}
           />
         </div>
