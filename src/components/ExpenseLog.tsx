@@ -327,7 +327,7 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
       <div className="app-card" style={{ overflowX: 'auto', padding: 0 }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem', minWidth: '820px' }}>
           <thead>
-            <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', color: '#1D4ED8', fontFamily: 'var(--font-title)', userSelect: 'none' }}>
+            <tr style={{ background: '#F0F9FF', borderBottom: '1px solid #D4F1F7', color: '#0077B6', fontFamily: 'var(--font-title)', userSelect: 'none' }}>
               <th onClick={() => handleSort('category')} style={{ padding: '14px 16px', cursor: 'pointer', whiteSpace: 'nowrap', minWidth: '160px' }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center' }}>Category {renderSortIcon('category')}</span>
               </th>

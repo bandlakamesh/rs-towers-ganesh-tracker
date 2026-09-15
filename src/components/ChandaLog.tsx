@@ -201,7 +201,7 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
       <div className="app-card" style={{ overflowX: 'auto', padding: 0 }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem', minWidth: '820px' }}>
           <thead>
-            <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', color: '#1D4ED8', fontFamily: 'var(--font-title)', userSelect: 'none' }}>
+            <tr style={{ background: '#F0F9FF', borderBottom: '1px solid #D4F1F7', color: '#0077B6', fontFamily: 'var(--font-title)', userSelect: 'none' }}>
               <th onClick={() => handleSort('receiptNo')} style={{ padding: '14px 16px', cursor: 'pointer', whiteSpace: 'nowrap', minWidth: '135px' }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center' }}>Receipt # {renderSortIcon('receiptNo')}</span>
               </th>
@@ -233,7 +233,7 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
 
               return (
                 <tr key={c.id} style={{ borderBottom: '1px solid #F1F5F9', transition: 'background 0.15s ease' }}>
-                  <td style={{ padding: '12px 16px', fontWeight: 700, color: '#1D4ED8', whiteSpace: 'nowrap', letterSpacing: '0.3px' }}>
+                  <td style={{ padding: '12px 16px', fontWeight: 700, color: '#0077B6', whiteSpace: 'nowrap', letterSpacing: '0.3px' }}>
                     {c.receiptNo}
                   </td>
                   <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
@@ -241,15 +241,15 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
                       display: 'inline-flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      color: '#1E40AF',
-                      background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)',
-                      border: '1px solid #93C5FD',
+                      color: '#0077B6',
+                      background: 'linear-gradient(135deg, #E0F7FA 0%, #CAF0F8 100%)',
+                      border: '1px solid #90E0EF',
                       padding: '4px 10px',
                       borderRadius: '8px',
                       fontSize: '0.8rem',
                       fontWeight: 700,
                       whiteSpace: 'nowrap',
-                      boxShadow: '0 1px 2px rgba(37, 99, 235, 0.08)'
+                      boxShadow: '0 1px 3px rgba(0, 150, 199, 0.12)'
                     }}>
                       Flat {c.flatNo}
                     </span>
