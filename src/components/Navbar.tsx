@@ -10,6 +10,7 @@ interface NavbarProps {
   onOpenWhatsAppModal: () => void;
   onGoHome?: () => void;
   isAdmin: boolean;
+  currentAdminFlat?: string;
   onOpenAdminModal: () => void;
 }
 
@@ -19,9 +20,12 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenWhatsAppModal,
   onGoHome,
   isAdmin,
+  currentAdminFlat,
   onOpenAdminModal,
 }) => {
   const jsonInputRef = useRef<HTMLInputElement>(null);
+
+  const loggedInResident = state.flatsList.find((f) => f.flatNo === currentAdminFlat);
 
   const handleExport = () => {
     exportAppStateJSON(state);
@@ -116,7 +120,15 @@ export const Navbar: React.FC<NavbarProps> = ({
             title={isAdmin ? "Admin Mode Active (Click to Manage)" : "Unlock Admin Mode"}
           >
             {isAdmin ? <Unlock size={16} /> : <Lock size={16} />}
-            <span className="btn-label-desktop">{isAdmin ? 'Admin Active' : 'Admin Unlock'}</span>
+            <span className="btn-label-desktop">
+              {isAdmin
+                ? loggedInResident
+                  ? loggedInResident.flatNo === '302'
+                    ? `👑 Flat #302 (${loggedInResident.residentName})`
+                    : `⭐ Flat #${loggedInResident.flatNo} (${loggedInResident.residentName})`
+                  : 'Admin Active'
+                : 'Admin Unlock'}
+            </span>
           </button>
 
           {/* Backup & Restore - Visible ONLY to Admin */}

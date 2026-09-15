@@ -25,6 +25,9 @@ export const App: React.FC = () => {
   const [isAdmin, setIsAdmin] = useState<boolean>(() => {
     return localStorage.getItem('rs_towers_is_admin') === 'true';
   });
+  const [currentAdminFlat, setCurrentAdminFlat] = useState<string>(() => {
+    return localStorage.getItem('rs_towers_admin_flat') || '302';
+  });
   const [isAdminModalOpen, setIsAdminModalOpen] = useState<boolean>(false);
 
   // Modals state
@@ -222,6 +225,7 @@ export const App: React.FC = () => {
         onOpenWhatsAppModal={() => setIsWhatsAppModalOpen(true)}
         onGoHome={() => setActiveTab('dashboard')}
         isAdmin={isAdmin}
+        currentAdminFlat={currentAdminFlat}
         onOpenAdminModal={() => setIsAdminModalOpen(true)}
       />
 
@@ -379,9 +383,11 @@ export const App: React.FC = () => {
         <AdminPinModal
           onClose={() => setIsAdminModalOpen(false)}
           isAdmin={isAdmin}
-          onAdminLoginSuccess={() => {
+          onAdminLoginSuccess={(flatNo) => {
             setIsAdmin(true);
+            setCurrentAdminFlat(flatNo);
             localStorage.setItem('rs_towers_is_admin', 'true');
+            localStorage.setItem('rs_towers_admin_flat', flatNo);
           }}
           onAdminLogout={() => {
             setIsAdmin(false);
