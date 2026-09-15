@@ -68,9 +68,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 RS Towers <span style={{ color: 'var(--gold-primary)', background: 'linear-gradient(135deg, #D97706 0%, #EA580C 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Ganesh 2026</span>
               </h1>
             </div>
-            <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', margin: 0, fontWeight: 500 }}>
-              Live Expense & Donation Tracker • RS Towers Apartment
-            </p>
           </div>
         </div>
 
