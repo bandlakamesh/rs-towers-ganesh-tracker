@@ -161,3 +161,21 @@ export const resetToInitialState = (): AppState => {
   syncToCloudRemote(fresh);
   return fresh;
 };
+
+const AUTO_BACKUP_KEY = 'rs_towers_auto_backup';
+
+export const createHourlyAutoBackup = (state: AppState): void => {
+  try {
+    const lastBackupTime = parseInt(localStorage.getItem('rs_towers_last_hourly_backup_time') || '0', 10);
+    const now = Date.now();
+    // If more than 1 hour (3600000 ms) has passed since last auto-backup
+    if (now - lastBackupTime >= 3600000) {
+      localStorage.setItem('rs_towers_last_hourly_backup_time', now.toString());
+      const dateTag = new Date(now).toISOString().split('T')[0];
+      localStorage.setItem(`${AUTO_BACKUP_KEY}_${dateTag}`, JSON.stringify(state));
+      console.log('✅ Hourly auto-backup saved at:', new Date(now).toLocaleString());
+    }
+  } catch (err) {
+    console.error('Failed to create hourly auto-backup:', err);
+  }
+};

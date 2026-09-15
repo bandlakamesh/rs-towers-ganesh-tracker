@@ -6,6 +6,7 @@ import {
   loadAppState,
   fetchLatestCloudState,
   syncToCloudRemote,
+  createHourlyAutoBackup,
 } from './utils/cloudStorage';
 
 import { Navbar } from './components/Navbar';
@@ -24,9 +25,12 @@ export const App: React.FC = () => {
   const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
   const [expenseModalTrigger, setExpenseModalTrigger] = useState(0);
 
-  // Auto-fetch latest cloud data on mount & set up 10-second live polling sync
+  // Auto-fetch latest cloud data on mount & set up 10-second live polling sync + 1-hour auto backups
   useEffect(() => {
     let isMounted = true;
+
+    // Run hourly auto backup check
+    createHourlyAutoBackup(appState);
 
     const pullLiveCloudData = async () => {
       const cloudData = await fetchLatestCloudState();
@@ -41,6 +45,10 @@ export const App: React.FC = () => {
       pullLiveCloudData();
     }, 10000);
 
+    const hourlyBackupInterval = setInterval(() => {
+      createHourlyAutoBackup(appState);
+    }, 3600000); // Check every 1 hour
+
     if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
       const channel = new BroadcastChannel('rs_towers_ganesh_sync');
       channel.onmessage = (event) => {
@@ -53,8 +61,9 @@ export const App: React.FC = () => {
     return () => {
       isMounted = false;
       clearInterval(interval);
+      clearInterval(hourlyBackupInterval);
     };
-  }, []);
+  }, [appState]);
 
   const handleStateUpdate = (newState: AppState) => {
     setAppState(newState);
