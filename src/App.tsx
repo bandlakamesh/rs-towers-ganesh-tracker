@@ -18,7 +18,7 @@ import { AnalyticsCharts } from './components/AnalyticsCharts';
 
 export const App: React.FC = () => {
   const [appState, setAppState] = useState<AppState>(() => loadAppState());
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'chanda' | 'expenses' | 'schedule' | 'analytics'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'chanda' | 'expenses' | 'schedule'>('dashboard');
 
   // Modals state
   const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
@@ -171,7 +171,7 @@ export const App: React.FC = () => {
             className={`chip ${activeTab === 'dashboard' ? 'active' : ''}`}
             onClick={() => setActiveTab('dashboard')}
           >
-            <Building2 size={15} /> Overview
+            <PieChart size={15} /> Dashboard
           </button>
 
           <button
@@ -194,25 +194,22 @@ export const App: React.FC = () => {
           >
             <Calendar size={15} /> Pooja Schedule
           </button>
-
-          <button
-            className={`chip ${activeTab === 'analytics' ? 'active' : ''}`}
-            onClick={() => setActiveTab('analytics')}
-          >
-            <PieChart size={15} /> Analytics
-          </button>
         </nav>
 
-        {/* Dashboard Tab */}
+        {/* Dashboard Tab (KPI Cards + Analytics Breakdown) */}
         {activeTab === 'dashboard' && (
-          <DashboardStats
-            state={appState}
-            onOpenAddChanda={() => setActiveTab('chanda')}
-            onOpenAddExpense={() => {
-              setActiveTab('expenses');
-              setExpenseModalTrigger((prev) => prev + 1);
-            }}
-          />
+          <>
+            <DashboardStats
+              state={appState}
+              onOpenAddChanda={() => setActiveTab('chanda')}
+              onOpenAddExpense={() => {
+                setActiveTab('expenses');
+                setExpenseModalTrigger((prev) => prev + 1);
+              }}
+            />
+
+            <AnalyticsCharts state={appState} />
+          </>
         )}
 
         {/* Chanda Tab */}
@@ -239,11 +236,6 @@ export const App: React.FC = () => {
         {/* Schedule Tab */}
         {activeTab === 'schedule' && (
           <EventTimeline events={appState.poojaEvents} />
-        )}
-
-        {/* Analytics Tab */}
-        {activeTab === 'analytics' && (
-          <AnalyticsCharts state={appState} />
         )}
 
       </main>
