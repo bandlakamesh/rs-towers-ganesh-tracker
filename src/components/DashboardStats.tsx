@@ -1,6 +1,7 @@
 import React from 'react';
 import { Wallet, TrendingUp, TrendingDown, Plus, Receipt } from 'lucide-react';
 import type { AppState } from '../types';
+import ganeshaBanner from '../assets/ganesha_banner.png';
 
 interface DashboardStatsProps {
   state: AppState;
@@ -56,13 +57,9 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({
         {/* Hero Artwork Image */}
         <div style={{ position: 'relative', width: '180px', height: '110px', borderRadius: '14px', overflow: 'hidden', flexShrink: 0, boxShadow: '0 6px 16px rgba(180, 83, 9, 0.25)', border: '2px solid #FDE68A' }}>
           <img
-            src="./ganesha_banner.png"
+            src={ganeshaBanner}
             alt="Ganapathi Utsav"
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            onError={(e) => {
-              // Hide if image missing
-              e.currentTarget.parentElement!.style.display = 'none';
-            }}
           />
         </div>
       </div>

@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { Share2, Download, Upload, Printer } from 'lucide-react';
 import type { AppState } from '../types';
 import { exportAppStateJSON, importAppStateJSON } from '../utils/cloudStorage';
+import ganeshaBadge from '../assets/ganesha_badge.png';
 
 interface NavbarProps {
   state: AppState;
@@ -43,7 +44,6 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Brand Title with Ganapathi Badge */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           <div style={{
-            position: 'relative',
             width: '46px',
             height: '46px',
             borderRadius: '50%',
@@ -54,37 +54,19 @@ export const Navbar: React.FC<NavbarProps> = ({
             justifyContent: 'center',
             boxShadow: '0 4px 14px rgba(245, 158, 11, 0.35)',
             overflow: 'hidden',
+            flexShrink: 0,
           }}>
             <img
-              src="./ganesha_badge.png"
+              src={ganeshaBadge}
               alt="Lord Ganesha"
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              onError={(e) => {
-                // Fallback emoji if image loading issue occurs
-                e.currentTarget.style.display = 'none';
-              }}
             />
-            <span style={{ fontSize: '24px', display: 'none' }}>🪔</span>
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <h1 style={{ fontSize: '1.25rem', margin: 0, letterSpacing: '-0.3px', fontWeight: 800 }}>
                 RS Towers <span style={{ color: 'var(--gold-primary)', background: 'linear-gradient(135deg, #D97706 0%, #EA580C 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Ganesh 2026</span>
               </h1>
-              <span style={{
-                fontSize: '0.68rem',
-                fontWeight: 700,
-                padding: '2px 8px',
-                borderRadius: '12px',
-                background: '#ECFDF5',
-                color: '#047857',
-                border: '1px solid #A7F3D0',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '4px',
-              }}>
-                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10B981', display: 'inline-block' }}></span> Live 24/7
-              </span>
             </div>
             <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', margin: 0, fontWeight: 500 }}>
               Live Expense & Donation Tracker • RS Towers Apartment
