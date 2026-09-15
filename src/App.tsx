@@ -303,20 +303,11 @@ export const App: React.FC = () => {
       </div>
 
       {/* Footer */}
-      <footer style={{ marginTop: '40px', padding: '24px 20px', textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-secondary)', borderTop: '1px solid #E2E8F0', background: '#FFFFFF' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-          <div>
-            🪔 <strong>R.S Towers Ganesh Utsav 2026</strong> • <a href={GITHUB_PAGES_LIVE_URL} target="_blank" rel="noreferrer" style={{ color: '#1D4ED8' }}>bandlakamesh.github.io/rs-towers-ganesh-tracker</a>
-          </div>
-          <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-            <button
-              onClick={handleResetData}
-              style={{ background: 'none', border: 'none', color: '#DC2626', cursor: 'pointer', fontSize: '0.78rem' }}
-            >
-              Reset Data
-            </button>
-            <span>Ganpati Bappa Morya! 🙏</span>
-          </div>
+      <footer style={{ marginTop: '40px', padding: '20px', textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-secondary)', borderTop: '1px solid #E2E8F0', background: '#FFFFFF' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
+          <span>🪔 <strong>R.S Towers Ganesh Utsav 2026</strong></span>
+          <span>•</span>
+          <span>Ganpati Bappa Morya! 🙏</span>
         </div>
       </footer>
 
