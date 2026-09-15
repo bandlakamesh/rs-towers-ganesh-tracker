@@ -272,6 +272,7 @@ export const App: React.FC = () => {
         {activeTab === 'expenses' && (
           <ExpenseLog
             expenseList={appState.expenseList}
+            flatsList={appState.flatsList}
             onAddExpense={handleAddExpense}
             onEditExpense={handleEditExpense}
             onDeleteExpense={handleDeleteExpense}

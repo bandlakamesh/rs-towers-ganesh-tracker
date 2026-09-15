@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Plus, Trash2, Pencil, CreditCard, Search, Eye, ArrowUpDown, ArrowUp, ArrowDown, User } from 'lucide-react';
-import type { ExpenseRecord, ExpenseCategory, PaymentMode } from '../types';
+import type { ExpenseRecord, ExpenseCategory, PaymentMode, FlatStatus } from '../types';
 
 interface ExpenseLogProps {
   expenseList: ExpenseRecord[];
+  flatsList?: FlatStatus[];
   onAddExpense: (expense: Omit<ExpenseRecord, 'id' | 'createdAt'>) => void;
   onEditExpense: (expense: ExpenseRecord) => void;
   onDeleteExpense: (id: string) => void;
@@ -24,8 +25,29 @@ const CATEGORIES: ExpenseCategory[] = [
   'Miscellaneous',
 ];
 
+const DEFAULT_PAID_BY_OPTIONS = [
+  'Flat 302 - Kamesh',
+  'Flat 301 - Yugandhar',
+  'Flat 101 - Bobby',
+  'Flat 102 - Tenant',
+  'Flat 103 - Balaji',
+  'Flat 201 - Naveen Varma',
+  'Flat 202 - Satya Nimmakayala',
+  'Flat 203 - Harshavardhan',
+  'Flat 303 - Sharath Babu',
+  'Flat 401 - Arun',
+  'Flat 402 - Ujwala',
+  'Flat 403 - Ravi Shankar',
+  'Flat 501 - Srikanth',
+  'Flat 502 - Prasanna',
+  'Flat 503 - Owner',
+  'Vendor',
+  'Committee Treasurer',
+];
+
 export const ExpenseLog: React.FC<ExpenseLogProps> = ({
   expenseList,
+  flatsList,
   onAddExpense,
   onEditExpense,
   onDeleteExpense,
@@ -46,7 +68,18 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
   const [category, setCategory] = useState<ExpenseCategory>('Pandal & Decoration');
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState<number>(1000);
-  const [paidBy, setPaidBy] = useState('Kamesh Bandla');
+
+  // Dynamic Paid By Dropdown Options
+  const paidByOptions = flatsList && flatsList.length > 0
+    ? [
+        ...flatsList.map((f) => `Flat ${f.flatNo} - ${f.residentName || 'Resident'}`),
+        'Vendor',
+        'Committee Treasurer',
+      ]
+    : DEFAULT_PAID_BY_OPTIONS;
+
+  const [paidBy, setPaidBy] = useState<string>('Flat 302 - Kamesh');
+  const [isCustomPaidBy, setIsCustomPaidBy] = useState<boolean>(false);
   const [paymentMode, setPaymentMode] = useState<PaymentMode>('UPI');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [billUrl, setBillUrl] = useState<string>('');
@@ -90,7 +123,8 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
     setCategory('Pandal & Decoration');
     setDescription('');
     setAmount(1000);
-    setPaidBy('Kamesh Bandla');
+    setPaidBy(paidByOptions[0] || 'Flat 302 - Kamesh');
+    setIsCustomPaidBy(false);
     setPaymentMode('UPI');
     setDate(new Date().toISOString().split('T')[0]);
     setBillUrl('');
@@ -103,6 +137,7 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
     setDescription(expense.description);
     setAmount(expense.amount);
     setPaidBy(expense.paidBy);
+    setIsCustomPaidBy(!paidByOptions.includes(expense.paidBy));
     setPaymentMode(expense.paymentMode);
     setDate(expense.date);
     setBillUrl(expense.billUrl || '');
@@ -439,15 +474,40 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div className="form-group">
-                  <label>Paid By (Committee Member)</label>
-                  <input
-                    type="text"
+                  <label>Paid By (Flat / Member / Vendor)</label>
+                  <select
                     className="form-control"
-                    value={paidBy}
-                    onChange={(e) => setPaidBy(e.target.value)}
-                    required
-                    placeholder="Member Name"
-                  />
+                    value={isCustomPaidBy || (!paidByOptions.includes(paidBy) && paidBy !== '') ? 'CUSTOM' : paidBy}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === 'CUSTOM') {
+                        setIsCustomPaidBy(true);
+                        setPaidBy('');
+                      } else {
+                        setIsCustomPaidBy(false);
+                        setPaidBy(val);
+                      }
+                    }}
+                  >
+                    {paidByOptions.map((opt) => (
+                      <option key={opt} value={opt}>
+                        {opt}
+                      </option>
+                    ))}
+                    <option value="CUSTOM">✏️ Type Custom Name...</option>
+                  </select>
+
+                  {(isCustomPaidBy || (!paidByOptions.includes(paidBy) && paidBy !== '')) && (
+                    <input
+                      type="text"
+                      className="form-control"
+                      style={{ marginTop: '8px' }}
+                      value={paidBy}
+                      onChange={(e) => setPaidBy(e.target.value)}
+                      required
+                      placeholder="Type Member or Vendor Name"
+                    />
+                  )}
                 </div>
 
                 <div className="form-group">
