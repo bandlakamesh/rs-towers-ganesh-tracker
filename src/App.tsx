@@ -338,10 +338,8 @@ export const App: React.FC = () => {
 
       {/* Footer */}
       <footer style={{ marginTop: '40px', padding: '20px', textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-secondary)', borderTop: '1px solid #E2E8F0', background: '#FFFFFF' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <span>🪔 <strong>R.S Towers Ganesh Utsav 2026</strong></span>
-          <span>•</span>
-          <span>Ganpati Bappa Morya! 🙏</span>
         </div>
       </footer>
 
