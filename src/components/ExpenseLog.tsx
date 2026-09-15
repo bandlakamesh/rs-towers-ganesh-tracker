@@ -20,6 +20,7 @@ const CATEGORIES: ExpenseCategory[] = [
   'Daily Aarti & Pandit',
   'Visarjan Procession',
   'Printing & Banners',
+  'Gifts',
   'Miscellaneous',
 ];
 

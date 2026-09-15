@@ -35,6 +35,7 @@ export type ExpenseCategory =
   | 'Daily Aarti & Pandit'
   | 'Visarjan Procession'
   | 'Printing & Banners'
+  | 'Gifts'
   | 'Miscellaneous';
 
 export interface FlatStatus {
