@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { Building2, Receipt, Calendar, PieChart, Plus, Share2 } from 'lucide-react';
-import type { AppState, ChandaRecord, ExpenseRecord } from './types';
+import type { AppState, ChandaRecord, ExpenseRecord, PoojaEvent } from './types';
 import {
   loadAppState,
   fetchLatestCloudState,
@@ -147,6 +147,43 @@ export const App: React.FC = () => {
     syncToCloudRemote(newState);
   };
 
+  const handleAddEvent = (newEvent: Omit<PoojaEvent, 'id'>) => {
+    const record: PoojaEvent = {
+      ...newEvent,
+      id: `evt-${Date.now()}`,
+    };
+    const updatedList = [...appState.poojaEvents, record];
+    const newState = {
+      ...appState,
+      poojaEvents: updatedList,
+      lastUpdated: Date.now(),
+    };
+    setAppState(newState);
+    syncToCloudRemote(newState);
+  };
+
+  const handleEditEvent = (updatedRecord: PoojaEvent) => {
+    const updatedList = appState.poojaEvents.map((evt) => (evt.id === updatedRecord.id ? updatedRecord : evt));
+    const newState = {
+      ...appState,
+      poojaEvents: updatedList,
+      lastUpdated: Date.now(),
+    };
+    setAppState(newState);
+    syncToCloudRemote(newState);
+  };
+
+  const handleDeleteEvent = (id: string) => {
+    const updatedList = appState.poojaEvents.filter((evt) => evt.id !== id);
+    const newState = {
+      ...appState,
+      poojaEvents: updatedList,
+      lastUpdated: Date.now(),
+    };
+    setAppState(newState);
+    syncToCloudRemote(newState);
+  };
+
   const handleFABClick = () => {
     setActiveTab('expenses');
     setExpenseModalTrigger((prev) => prev + 1);
@@ -235,7 +272,12 @@ export const App: React.FC = () => {
 
         {/* Schedule Tab */}
         {activeTab === 'schedule' && (
-          <EventTimeline events={appState.poojaEvents} />
+          <EventTimeline
+            events={appState.poojaEvents}
+            onAddEvent={handleAddEvent}
+            onEditEvent={handleEditEvent}
+            onDeleteEvent={handleDeleteEvent}
+          />
         )}
 
       </main>
