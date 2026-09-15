@@ -69,10 +69,7 @@ export const generateWhatsAppEventReminderText = (event: { title: string; date: 
 📝 *Details*: ${event.description}
 
 🙏 All RS Towers residents & family members are cordially invited!
-Ganpati Bappa Morya! 🌺
-
-🔗 *Live Festival Dashboard & Schedule*:
-${GITHUB_PAGES_LIVE_URL}`;
+Ganpati Bappa Morya! 🌺`;
 };
 
 export const openWhatsAppShareLink = (text: string): void => {
