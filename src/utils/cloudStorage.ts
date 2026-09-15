@@ -4,8 +4,8 @@ import { INITIAL_APP_STATE } from '../data/initialData';
 const LOCAL_STORAGE_KEY = 'rs_towers_ganesh_utsav_v1';
 const FIREBASE_URL_KEY = 'rs_towers_firebase_url';
 
-// Default Firebase Realtime Database REST Endpoint
-const DEFAULT_FIREBASE_DB_URL = 'https://rs-towers-ganesh-utsav-2026-default-rtdb.firebaseio.com/state.json';
+// Default Firebase Realtime Database REST Endpoint for RS Towers Ganesh Utsav 2026
+const DEFAULT_FIREBASE_DB_URL = 'https://rs-towers-ganesh-default-rtdb.asia-southeast1.firebasedatabase.app/state.json';
 
 export const getFirebaseDbUrl = (): string => {
   if (typeof window !== 'undefined') {
