@@ -81,7 +81,6 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!flatNo || !residentName || amount < 0) {
-      alert('Please fill out Flat No, Resident Name, and a valid Amount.');
       return;
     }
 
@@ -284,11 +283,7 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
                       </button>
 
                       <button
-                        onClick={() => {
-                          if (confirm(`Delete receipt ${c.receiptNo} for Flat ${c.flatNo}?`)) {
-                            onDeleteChanda(c.id);
-                          }
-                        }}
+                        onClick={() => onDeleteChanda(c.id)}
                         style={{ background: 'none', border: 'none', color: '#DC2626', cursor: 'pointer', padding: '4px' }}
                         title="Delete Record"
                       >

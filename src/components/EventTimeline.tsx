@@ -58,7 +58,6 @@ export const EventTimeline: React.FC<EventTimelineProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !date || !location || !coordinator) {
-      alert('Please fill out Event Title, Date, Location, and Coordinator fields.');
       return;
     }
 
@@ -177,11 +176,7 @@ export const EventTimeline: React.FC<EventTimelineProps> = ({
                   </button>
 
                   <button
-                    onClick={() => {
-                      if (confirm(`Delete event "${evt.title}"?`)) {
-                        onDeleteEvent?.(evt.id);
-                      }
-                    }}
+                    onClick={() => onDeleteEvent?.(evt.id)}
                     style={{ background: 'none', border: 'none', color: '#DC2626', cursor: 'pointer', padding: '4px' }}
                     title="Delete Event"
                   >

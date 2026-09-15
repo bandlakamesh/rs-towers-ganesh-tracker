@@ -28,9 +28,8 @@ export const Navbar: React.FC<NavbarProps> = ({
       try {
         const imported = await importAppStateJSON(file);
         onStateUpdate(imported);
-        alert('✅ Backup restored successfully!');
       } catch (err: any) {
-        alert('❌ Error restoring backup: ' + err.message);
+        console.error('Error restoring backup:', err);
       }
     }
   };
@@ -98,10 +97,8 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         onStateUpdate(newState);
         syncToCloudRemote(newState);
-        alert(`✅ Excel Imported Successfully! Processed records from ${wb.SheetNames.length} sheet(s).`);
-
       } catch (err: any) {
-        alert('❌ Error reading Excel file: ' + err.message);
+        console.error('Error reading Excel file:', err);
       }
     };
     reader.readAsBinaryString(file);

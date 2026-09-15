@@ -102,7 +102,6 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!description || amount <= 0 || !paidBy) {
-      alert('Please fill out Description, Amount, and Paid By fields.');
       return;
     }
 
@@ -282,11 +281,7 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
                       <Pencil size={15} />
                     </button>
                     <button
-                      onClick={() => {
-                        if (confirm(`Delete expense "${e.description}"?`)) {
-                          onDeleteExpense(e.id);
-                        }
-                      }}
+                      onClick={() => onDeleteExpense(e.id)}
                       style={{ background: 'none', border: 'none', color: '#DC2626', cursor: 'pointer', padding: '4px' }}
                       title="Delete Record"
                     >
