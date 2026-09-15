@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Receipt, Search, Eye } from 'lucide-react';
+import { Plus, Trash2, Pencil, Receipt, Search, Eye } from 'lucide-react';
 import type { ExpenseRecord, ExpenseCategory, PaymentMode } from '../types';
 
 interface ExpenseLogProps {
   expenseList: ExpenseRecord[];
   onAddExpense: (expense: Omit<ExpenseRecord, 'id' | 'createdAt'>) => void;
+  onEditExpense: (expense: ExpenseRecord) => void;
   onDeleteExpense: (id: string) => void;
   openAddModalTrigger?: number;
 }
@@ -23,16 +24,12 @@ const CATEGORIES: ExpenseCategory[] = [
 export const ExpenseLog: React.FC<ExpenseLogProps> = ({
   expenseList,
   onAddExpense,
+  onEditExpense,
   onDeleteExpense,
   openAddModalTrigger,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  React.useEffect(() => {
-    if (openAddModalTrigger && openAddModalTrigger > 0) {
-      setIsModalOpen(true);
-    }
-  }, [openAddModalTrigger]);
+  const [editingRecord, setEditingRecord] = useState<ExpenseRecord | null>(null);
   const [selectedBillImage, setSelectedBillImage] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('All');
@@ -45,6 +42,36 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
   const [paymentMode, setPaymentMode] = useState<PaymentMode>('UPI');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [billUrl, setBillUrl] = useState<string>('');
+
+  React.useEffect(() => {
+    if (openAddModalTrigger && openAddModalTrigger > 0) {
+      handleOpenAdd();
+    }
+  }, [openAddModalTrigger]);
+
+  const handleOpenAdd = () => {
+    setEditingRecord(null);
+    setCategory('Pandal & Decoration');
+    setDescription('');
+    setAmount(1000);
+    setPaidBy('Kamesh Bandla');
+    setPaymentMode('UPI');
+    setDate(new Date().toISOString().split('T')[0]);
+    setBillUrl('');
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEdit = (expense: ExpenseRecord) => {
+    setEditingRecord(expense);
+    setCategory(expense.category);
+    setDescription(expense.description);
+    setAmount(expense.amount);
+    setPaidBy(expense.paidBy);
+    setPaymentMode(expense.paymentMode);
+    setDate(expense.date);
+    setBillUrl(expense.billUrl || '');
+    setIsModalOpen(true);
+  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -64,17 +91,31 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
       return;
     }
 
-    onAddExpense({
-      category,
-      description,
-      amount: Number(amount),
-      paidBy,
-      date,
-      paymentMode,
-      billUrl,
-    });
+    if (editingRecord) {
+      onEditExpense({
+        ...editingRecord,
+        category,
+        description,
+        amount: Number(amount),
+        paidBy,
+        date,
+        paymentMode,
+        billUrl,
+      });
+    } else {
+      onAddExpense({
+        category,
+        description,
+        amount: Number(amount),
+        paidBy,
+        date,
+        paymentMode,
+        billUrl,
+      });
+    }
 
     setIsModalOpen(false);
+    setEditingRecord(null);
     setDescription('');
     setBillUrl('');
   };
@@ -128,7 +169,7 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
             ))}
           </select>
 
-          <button className="app-btn" onClick={() => setIsModalOpen(true)} style={{ background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)', color: '#FFF' }}>
+          <button className="app-btn" onClick={handleOpenAdd} style={{ background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)', color: '#FFF' }}>
             <Plus size={18} /> Record Expense
           </button>
         </div>
@@ -146,7 +187,7 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
               <th style={{ padding: '14px 16px' }}>Mode</th>
               <th style={{ padding: '14px 16px' }}>Date</th>
               <th style={{ padding: '14px 16px' }}>Bill Proof</th>
-              <th style={{ padding: '14px 16px', textAlign: 'right' }}>Action</th>
+              <th style={{ padding: '14px 16px', textAlign: 'right' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -182,17 +223,26 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
                   )}
                 </td>
                 <td style={{ padding: '12px 16px', textAlign: 'right' }}>
-                  <button
-                    onClick={() => {
-                      if (confirm(`Delete expense "${e.description}"?`)) {
-                        onDeleteExpense(e.id);
-                      }
-                    }}
-                    style={{ background: 'none', border: 'none', color: '#DC2626', cursor: 'pointer', opacity: 0.8 }}
-                    title="Delete Record"
-                  >
-                    <Trash2 size={16} />
-                  </button>
+                  <div style={{ display: 'inline-flex', gap: '8px', alignItems: 'center' }}>
+                    <button
+                      onClick={() => handleOpenEdit(e)}
+                      style={{ background: 'none', border: 'none', color: '#2563EB', cursor: 'pointer', padding: '4px' }}
+                      title="Edit Expense"
+                    >
+                      <Pencil size={15} />
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (confirm(`Delete expense "${e.description}"?`)) {
+                          onDeleteExpense(e.id);
+                        }
+                      }}
+                      style={{ background: 'none', border: 'none', color: '#DC2626', cursor: 'pointer', padding: '4px' }}
+                      title="Delete Record"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -208,12 +258,12 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
         </table>
       </div>
 
-      {/* Add Expense Modal */}
+      {/* Add / Edit Expense Modal */}
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal-container">
             <h3 style={{ fontSize: '1.2rem', marginBottom: '16px', color: '#DC2626' }}>
-              💸 Record New Expense
+              {editingRecord ? '✏️ Edit Expense Record' : '💸 Record New Expense'}
             </h3>
 
             <form onSubmit={handleSubmit}>
@@ -318,7 +368,7 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
                   Cancel
                 </button>
                 <button type="submit" className="app-btn" style={{ background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)', color: '#FFF' }}>
-                  Save Expense
+                  {editingRecord ? 'Update Expense' : 'Save Expense'}
                 </button>
               </div>
             </form>

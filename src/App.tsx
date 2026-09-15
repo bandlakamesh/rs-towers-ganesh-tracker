@@ -87,6 +87,17 @@ export const App: React.FC = () => {
     });
   };
 
+  const handleEditChanda = (updatedRecord: ChandaRecord) => {
+    const updatedList = appState.chandaList.map((c) => (c.id === updatedRecord.id ? updatedRecord : c));
+    const newState: AppState = {
+      ...appState,
+      chandaList: updatedList,
+      lastUpdated: Date.now(),
+    };
+    setAppState(newState);
+    syncToCloudRemote(newState);
+  };
+
   const handleDeleteChanda = (id: string) => {
     const updatedList = appState.chandaList.filter((c) => c.id !== id);
     const newState = {
@@ -112,6 +123,17 @@ export const App: React.FC = () => {
       lastUpdated: Date.now(),
     };
 
+    setAppState(newState);
+    syncToCloudRemote(newState);
+  };
+
+  const handleEditExpense = (updatedRecord: ExpenseRecord) => {
+    const updatedList = appState.expenseList.map((e) => (e.id === updatedRecord.id ? updatedRecord : e));
+    const newState = {
+      ...appState,
+      expenseList: updatedList,
+      lastUpdated: Date.now(),
+    };
     setAppState(newState);
     syncToCloudRemote(newState);
   };
@@ -212,6 +234,7 @@ export const App: React.FC = () => {
           <ChandaLog
             chandaList={appState.chandaList}
             onAddChanda={handleAddChanda}
+            onEditChanda={handleEditChanda}
             onDeleteChanda={handleDeleteChanda}
             prefillFlatNo={prefillFlatPayment?.flatNo}
             prefillResidentName={prefillFlatPayment?.residentName}
@@ -223,6 +246,7 @@ export const App: React.FC = () => {
           <ExpenseLog
             expenseList={appState.expenseList}
             onAddExpense={handleAddExpense}
+            onEditExpense={handleEditExpense}
             onDeleteExpense={handleDeleteExpense}
             openAddModalTrigger={expenseModalTrigger}
           />

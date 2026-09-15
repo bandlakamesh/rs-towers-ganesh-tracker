@@ -121,19 +121,16 @@ export const FlatDirectory: React.FC<FlatDirectoryProps> = ({
                 </div>
 
                 {/* Resident Name */}
-                <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0F172A', marginBottom: '4px' }}>
+                <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0F172A', marginBottom: '2px' }}>
                   {flat.residentName || 'Owner'}
                 </div>
 
-                {/* Contribution details */}
-                <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-                  <div>Paid: <strong style={{ color: isFullyPaid ? '#059669' : '#0F172A' }}>₹{flat.paidAmount.toLocaleString('en-IN')}</strong> / ₹{flat.targetAmount.toLocaleString('en-IN')}</div>
-                  {!isFullyPaid && (
-                    <div style={{ color: '#DC2626', fontSize: '0.76rem', fontWeight: 600, marginTop: '2px' }}>
-                      Due: ₹{pendingAmt.toLocaleString('en-IN')}
-                    </div>
-                  )}
-                </div>
+                {/* Contribution details: Shown ONLY if Pending */}
+                {!isFullyPaid && (
+                  <div style={{ fontSize: '0.82rem', color: '#DC2626', fontWeight: 700, marginTop: '4px' }}>
+                    Due: ₹{pendingAmt.toLocaleString('en-IN')}
+                  </div>
+                )}
               </div>
 
               {/* Action Buttons: Shown ONLY for Pending / Partial flats */}

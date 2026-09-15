@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Receipt, Search } from 'lucide-react';
+import { Plus, Trash2, Pencil, Receipt, Search } from 'lucide-react';
 import type { ChandaRecord, PaymentMode } from '../types';
 
 interface ChandaLogProps {
   chandaList: ChandaRecord[];
   onAddChanda: (record: Omit<ChandaRecord, 'id' | 'createdAt'>) => void;
+  onEditChanda: (record: ChandaRecord) => void;
   onDeleteChanda: (id: string) => void;
   prefillFlatNo?: string;
   prefillResidentName?: string;
@@ -13,11 +14,13 @@ interface ChandaLogProps {
 export const ChandaLog: React.FC<ChandaLogProps> = ({
   chandaList,
   onAddChanda,
+  onEditChanda,
   onDeleteChanda,
   prefillFlatNo = '',
   prefillResidentName = '',
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingRecord, setEditingRecord] = useState<ChandaRecord | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [modeFilter, setModeFilter] = useState<string>('All');
 
@@ -30,6 +33,30 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
   const [notes, setNotes] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
 
+  const handleOpenAdd = () => {
+    setEditingRecord(null);
+    setFlatNo(prefillFlatNo || '101');
+    setResidentName(prefillResidentName || '');
+    setAmount(2500);
+    setPaymentMode('UPI');
+    setReceiptNo(`RSG-2026-${String(chandaList.length + 1).padStart(3, '0')}`);
+    setNotes('');
+    setDate(new Date().toISOString().split('T')[0]);
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEdit = (record: ChandaRecord) => {
+    setEditingRecord(record);
+    setFlatNo(record.flatNo);
+    setResidentName(record.residentName);
+    setAmount(record.amount);
+    setPaymentMode(record.paymentMode);
+    setReceiptNo(record.receiptNo);
+    setNotes(record.notes || '');
+    setDate(record.date);
+    setIsModalOpen(true);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!flatNo || !residentName || amount <= 0) {
@@ -37,18 +64,32 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
       return;
     }
 
-    onAddChanda({
-      flatNo,
-      residentName,
-      amount: Number(amount),
-      date,
-      paymentMode,
-      status: 'Received',
-      receiptNo: receiptNo || `RSG-${Date.now().toString().slice(-6)}`,
-      notes,
-    });
+    if (editingRecord) {
+      onEditChanda({
+        ...editingRecord,
+        flatNo,
+        residentName,
+        amount: Number(amount),
+        date,
+        paymentMode,
+        receiptNo: receiptNo || editingRecord.receiptNo,
+        notes,
+      });
+    } else {
+      onAddChanda({
+        flatNo,
+        residentName,
+        amount: Number(amount),
+        date,
+        paymentMode,
+        status: 'Received',
+        receiptNo: receiptNo || `RSG-${Date.now().toString().slice(-6)}`,
+        notes,
+      });
+    }
 
     setIsModalOpen(false);
+    setEditingRecord(null);
     setNotes('');
   };
 
@@ -101,7 +142,7 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
             <option value="NetBanking">NetBanking</option>
           </select>
 
-          <button className="app-btn app-btn-primary" onClick={() => setIsModalOpen(true)}>
+          <button className="app-btn app-btn-primary" onClick={handleOpenAdd}>
             <Plus size={18} /> Record Payment
           </button>
         </div>
@@ -119,7 +160,7 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
               <th style={{ padding: '14px 16px' }}>Mode</th>
               <th style={{ padding: '14px 16px' }}>Date</th>
               <th style={{ padding: '14px 16px' }}>Notes</th>
-              <th style={{ padding: '14px 16px', textAlign: 'right' }}>Action</th>
+              <th style={{ padding: '14px 16px', textAlign: 'right' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -141,17 +182,26 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
                 <td style={{ padding: '12px 16px', color: 'var(--text-secondary)' }}>{c.date}</td>
                 <td style={{ padding: '12px 16px', color: 'var(--text-secondary)', fontSize: '0.82rem' }}>{c.notes || '-'}</td>
                 <td style={{ padding: '12px 16px', textAlign: 'right' }}>
-                  <button
-                    onClick={() => {
-                      if (confirm(`Delete receipt ${c.receiptNo} for Flat ${c.flatNo}?`)) {
-                        onDeleteChanda(c.id);
-                      }
-                    }}
-                    style={{ background: 'none', border: 'none', color: '#DC2626', cursor: 'pointer', opacity: 0.8 }}
-                    title="Delete Record"
-                  >
-                    <Trash2 size={16} />
-                  </button>
+                  <div style={{ display: 'inline-flex', gap: '8px', alignItems: 'center' }}>
+                    <button
+                      onClick={() => handleOpenEdit(c)}
+                      style={{ background: 'none', border: 'none', color: '#2563EB', cursor: 'pointer', padding: '4px' }}
+                      title="Edit Donation"
+                    >
+                      <Pencil size={15} />
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (confirm(`Delete receipt ${c.receiptNo} for Flat ${c.flatNo}?`)) {
+                          onDeleteChanda(c.id);
+                        }
+                      }}
+                      style={{ background: 'none', border: 'none', color: '#DC2626', cursor: 'pointer', padding: '4px' }}
+                      title="Delete Record"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -167,12 +217,12 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
         </table>
       </div>
 
-      {/* Add Chanda Modal */}
+      {/* Add / Edit Chanda Modal */}
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal-container">
             <h3 style={{ fontSize: '1.2rem', marginBottom: '16px', color: '#1D4ED8' }}>
-              ➕ Record Chanda Payment
+              {editingRecord ? '✏️ Edit Chanda Payment' : '➕ Record Chanda Payment'}
             </h3>
             
             <form onSubmit={handleSubmit}>
@@ -270,7 +320,7 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
                   Cancel
                 </button>
                 <button type="submit" className="app-btn app-btn-primary">
-                  Save Receipt
+                  {editingRecord ? 'Update Receipt' : 'Save Receipt'}
                 </button>
               </div>
             </form>
