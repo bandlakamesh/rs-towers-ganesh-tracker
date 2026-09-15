@@ -1,9 +1,8 @@
 import React, { useRef } from 'react';
-import { Share2, Download, Upload, Globe, Sparkles, FileSpreadsheet } from 'lucide-react';
+import { Share2, Download, Upload, Globe, FileSpreadsheet } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import type { AppState, ChandaRecord, ExpenseRecord } from '../types';
 import { exportAppStateJSON, importAppStateJSON, syncToCloudRemote, syncFlatsWithChanda } from '../utils/cloudStorage';
-import { GITHUB_PAGES_LIVE_URL } from '../utils/whatsappFormatter';
 
 interface NavbarProps {
   state: AppState;
@@ -56,7 +55,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           const rows: any[] = XLSX.utils.sheet_to_json(sheet);
 
           rows.forEach((row, idx) => {
-            // Check if row is a Chanda / Contribution entry
             const flat = row['Flat'] || row['Flat No'] || row['FlatNo'] || row['Unit'];
             const resident = row['Resident'] || row['Resident Name'] || row['Name'] || row['Owner'];
             const chandaAmount = row['Amount'] || row['Chanda'] || row['Contribution'] || row['Paid'];
@@ -76,7 +74,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               });
             }
 
-            // Check if row is an Expense entry
             const expDesc = row['Description'] || row['Expense'] || row['Item'];
             const expAmount = row['Expense Amount'] || row['Cost'] || (row['Amount'] && !flat ? row['Amount'] : null);
             if (expDesc && expAmount) {
@@ -113,59 +110,56 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <header className="glass-card" style={{ borderRadius: 0, borderTop: 0, borderLeft: 0, borderRight: 0, marginBottom: '24px' }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
+    <header className="app-card" style={{ borderRadius: 0, borderTop: 0, borderLeft: 0, borderRight: 0, marginBottom: 0, padding: '14px 20px' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
         
-        {/* Brand & Title */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+        {/* Brand Title */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{
-            width: '48px',
-            height: '48px',
+            width: '42px',
+            height: '42px',
             borderRadius: '50%',
-            background: 'linear-gradient(135deg, #F59E0B 0%, #FF6B00 100%)',
+            background: 'var(--saffron-gradient)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '24px',
-            boxShadow: '0 0 15px rgba(245, 158, 11, 0.5)',
+            fontSize: '22px',
+            boxShadow: '0 0 12px rgba(245, 158, 11, 0.4)',
           }}>
             🪔
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <h1 style={{ fontSize: '1.35rem', letterSpacing: '-0.3px', margin: 0 }}>
-                R.S Towers <span style={{ color: 'var(--primary-gold)' }}>Ganesh Utsav 2026</span>
+              <h1 style={{ fontSize: '1.2rem', margin: 0, letterSpacing: '-0.3px' }}>
+                RS Towers <span style={{ color: 'var(--gold-primary)' }}>Ganesh 2026</span>
               </h1>
-              <span className="badge badge-received" style={{ fontSize: '0.68rem', padding: '2px 8px' }}>
-                <Sparkles size={10} /> Live 24/7
-              </span>
             </div>
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
-              Transparent Expense & Chanda Tracker • 15 Flats
+            <p style={{ fontSize: '0.76rem', color: 'var(--text-secondary)', margin: 0 }}>
+              Live Expense & Donation Tracker
             </p>
           </div>
         </div>
 
-        {/* Action Controls */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-          <button className="btn btn-whatsapp" onClick={onOpenWhatsAppModal}>
-            <Share2 size={18} /> Share on WhatsApp
+        {/* Quick Action Buttons */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          <button className="app-btn app-btn-whatsapp" onClick={onOpenWhatsAppModal} style={{ padding: '8px 14px', fontSize: '0.84rem' }}>
+            <Share2 size={16} /> Share WhatsApp
           </button>
 
-          <button className="btn btn-primary" onClick={() => excelInputRef.current?.click()} style={{ background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)', color: '#FFF' }}>
-            <FileSpreadsheet size={18} /> Import Excel / CSV
+          <button className="app-btn app-btn-primary" onClick={() => excelInputRef.current?.click()} style={{ background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)', color: '#FFF', padding: '8px 14px', fontSize: '0.84rem' }}>
+            <FileSpreadsheet size={16} /> Excel Import
           </button>
 
-          <button className="btn btn-secondary" onClick={onOpenDeployModal} style={{ background: 'rgba(255, 255, 255, 0.08)' }}>
+          <button className="app-btn app-btn-secondary" onClick={onOpenDeployModal} style={{ padding: '8px 12px', fontSize: '0.84rem' }} title="Deploy to GitHub">
             <Globe size={16} /> Deploy
           </button>
 
-          <button className="btn btn-secondary" onClick={handleExport} title="Download JSON Backup">
-            <Download size={16} /> Export
+          <button className="app-btn app-btn-secondary" onClick={handleExport} style={{ padding: '8px 12px', fontSize: '0.84rem' }} title="Download JSON Backup">
+            <Download size={16} />
           </button>
 
-          <button className="btn btn-secondary" onClick={() => jsonInputRef.current?.click()} title="Restore JSON Backup">
-            <Upload size={16} /> Import JSON
+          <button className="app-btn app-btn-secondary" onClick={() => jsonInputRef.current?.click()} style={{ padding: '8px 12px', fontSize: '0.84rem' }} title="Restore JSON Backup">
+            <Upload size={16} />
           </button>
 
           {/* Hidden File Inputs */}
@@ -186,11 +180,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           />
         </div>
 
-      </div>
-
-      {/* Live GitHub URL Bar */}
-      <div style={{ background: 'rgba(15, 23, 42, 0.9)', padding: '6px 20px', borderTop: '1px solid rgba(255, 255, 255, 0.05)', fontSize: '0.78rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-        🌍 <strong>Live Public URL</strong>: <a href={GITHUB_PAGES_LIVE_URL} target="_blank" rel="noreferrer" style={{ color: 'var(--text-gold)', textDecoration: 'underline' }}>{GITHUB_PAGES_LIVE_URL}</a> (Share in WhatsApp group)
       </div>
     </header>
   );

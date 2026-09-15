@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { Building2, Receipt, Calendar, PieChart, Radio } from 'lucide-react';
+import { Building2, Receipt, Calendar, PieChart, Radio, Plus, Share2 } from 'lucide-react';
 import type { AppState, ChandaRecord, ExpenseRecord } from './types';
 import {
   loadAppState,
@@ -43,15 +43,12 @@ export const App: React.FC = () => {
       setIsCloudSyncing(false);
     };
 
-    // Initial pull
     pullLiveCloudData();
 
-    // Poll cloud every 10 seconds for real-time multi-user updates
     const interval = setInterval(() => {
       pullLiveCloudData();
     }, 10000);
 
-    // Cross-tab broadcast channel listener
     if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
       const channel = new BroadcastChannel('rs_towers_ganesh_sync');
       channel.onmessage = (event) => {
@@ -89,7 +86,6 @@ export const App: React.FC = () => {
     setAppState(newState);
     syncToCloudRemote(newState);
 
-    // Trigger celebratory confetti!
     confetti({
       particleCount: 80,
       spread: 70,
@@ -160,57 +156,57 @@ export const App: React.FC = () => {
         onOpenDeployModal={() => setIsDeployModalOpen(true)}
       />
 
-      {/* Realtime Live Cloud Sync Pulse Indicator */}
-      <div style={{ background: 'rgba(16, 185, 129, 0.12)', borderBottom: '1px solid rgba(16, 185, 129, 0.3)', padding: '6px 20px', textAlign: 'center', fontSize: '0.8rem', color: '#34D399', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-        <Radio size={14} style={{ animation: 'pulse 1.5s infinite' }} />
+      {/* Realtime Live Cloud Sync Indicator */}
+      <div style={{ background: 'rgba(16, 185, 129, 0.1)', borderBottom: '1px solid rgba(16, 185, 129, 0.2)', padding: '6px 16px', textAlign: 'center', fontSize: '0.78rem', color: '#34D399', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+        <Radio size={13} style={{ animation: 'pulse 1.5s infinite' }} />
         <span>
-          <strong>Live Multi-User Sync Active</strong> — Any expense or contribution entered on any phone updates live for everyone in real time!
+          <strong>Live Multi-User Cloud Sync Active</strong>
           {isCloudSyncing && <span style={{ opacity: 0.7, marginLeft: '6px' }}>(Syncing...)</span>}
         </span>
       </div>
 
-      {/* Main Container */}
-      <main style={{ maxWidth: '1200px', width: '100%', margin: '0 auto', padding: '20px 20px 0 20px', flex: 1 }}>
+      {/* Main App Container */}
+      <main style={{ maxWidth: '1200px', width: '100%', margin: '0 auto', padding: '16px 16px 0 16px', flex: 1 }}>
         
-        {/* Navigation Tab Bar */}
-        <nav className="tab-bar">
+        {/* Desktop Navigation Tabs */}
+        <nav className="chip-group" style={{ marginBottom: '20px' }}>
           <button
-            className={`tab-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
+            className={`chip ${activeTab === 'dashboard' ? 'active' : ''}`}
             onClick={() => setActiveTab('dashboard')}
           >
-            <Building2 size={18} /> Dashboard & 15 Flats
+            <Building2 size={15} /> Overview & 15 Flats
           </button>
 
           <button
-            className={`tab-btn ${activeTab === 'chanda' ? 'active' : ''}`}
+            className={`chip ${activeTab === 'chanda' ? 'active' : ''}`}
             onClick={() => setActiveTab('chanda')}
           >
-            <Receipt size={18} /> Chanda Receipts ({appState.chandaList.length})
+            <Receipt size={15} /> Donations ({appState.chandaList.length})
           </button>
 
           <button
-            className={`tab-btn ${activeTab === 'expenses' ? 'active' : ''}`}
+            className={`chip ${activeTab === 'expenses' ? 'active' : ''}`}
             onClick={() => setActiveTab('expenses')}
           >
-            <Receipt size={18} /> Expenses Log ({appState.expenseList.length})
+            <Receipt size={15} /> Expenses ({appState.expenseList.length})
           </button>
 
           <button
-            className={`tab-btn ${activeTab === 'schedule' ? 'active' : ''}`}
+            className={`chip ${activeTab === 'schedule' ? 'active' : ''}`}
             onClick={() => setActiveTab('schedule')}
           >
-            <Calendar size={18} /> Pooja Schedule
+            <Calendar size={15} /> Pooja Schedule
           </button>
 
           <button
-            className={`tab-btn ${activeTab === 'analytics' ? 'active' : ''}`}
+            className={`chip ${activeTab === 'analytics' ? 'active' : ''}`}
             onClick={() => setActiveTab('analytics')}
           >
-            <PieChart size={18} /> Analytics
+            <PieChart size={15} /> Analytics
           </button>
         </nav>
 
-        {/* Hero KPI Summary (visible on dashboard tab) */}
+        {/* Dashboard Tab */}
         {activeTab === 'dashboard' && (
           <>
             <DashboardStats
@@ -226,7 +222,7 @@ export const App: React.FC = () => {
           </>
         )}
 
-        {/* Chanda Log Tab */}
+        {/* Chanda Tab */}
         {activeTab === 'chanda' && (
           <ChandaLog
             chandaList={appState.chandaList}
@@ -237,7 +233,7 @@ export const App: React.FC = () => {
           />
         )}
 
-        {/* Expense Log Tab */}
+        {/* Expenses Tab */}
         {activeTab === 'expenses' && (
           <ExpenseLog
             expenseList={appState.expenseList}
@@ -246,7 +242,7 @@ export const App: React.FC = () => {
           />
         )}
 
-        {/* Pooja Schedule Tab */}
+        {/* Schedule Tab */}
         {activeTab === 'schedule' && (
           <EventTimeline events={appState.poojaEvents} />
         )}
@@ -258,18 +254,71 @@ export const App: React.FC = () => {
 
       </main>
 
+      {/* Floating Action Button (FAB) for Mobile */}
+      <button
+        className="fab-btn"
+        onClick={() => setActiveTab(activeTab === 'expenses' ? 'expenses' : 'chanda')}
+        title="Add Entry"
+      >
+        <Plus size={28} />
+      </button>
+
+      {/* Mobile Bottom Navigation Bar */}
+      <div className="bottom-nav">
+        <button
+          className={`bottom-nav-item ${activeTab === 'dashboard' ? 'active' : ''}`}
+          onClick={() => setActiveTab('dashboard')}
+        >
+          <Building2 size={20} />
+          <span>Overview</span>
+        </button>
+
+        <button
+          className={`bottom-nav-item ${activeTab === 'chanda' ? 'active' : ''}`}
+          onClick={() => setActiveTab('chanda')}
+        >
+          <Receipt size={20} />
+          <span>Donations</span>
+        </button>
+
+        <button
+          className={`bottom-nav-item ${activeTab === 'expenses' ? 'active' : ''}`}
+          onClick={() => setActiveTab('expenses')}
+        >
+          <Receipt size={20} />
+          <span>Expenses</span>
+        </button>
+
+        <button
+          className={`bottom-nav-item ${activeTab === 'schedule' ? 'active' : ''}`}
+          onClick={() => setActiveTab('schedule')}
+        >
+          <Calendar size={20} />
+          <span>Schedule</span>
+        </button>
+
+        <button
+          className="bottom-nav-item"
+          onClick={() => setIsWhatsAppModalOpen(true)}
+          style={{ color: '#25D366' }}
+        >
+          <Share2 size={20} />
+          <span>Share</span>
+        </button>
+      </div>
+
       {/* Footer */}
-      <footer className="glass-card" style={{ borderRadius: 0, marginTop: '40px', padding: '24px 20px', borderBottom: 0, borderLeft: 0, borderRight: 0 }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '16px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+      <footer style={{ marginTop: '40px', padding: '24px 20px', textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-secondary)', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
           <div>
-            🪔 <strong>R.S Towers Ganesh Utsav 2026</strong> • Live URL: <a href={GITHUB_PAGES_LIVE_URL} target="_blank" rel="noreferrer" style={{ color: 'var(--text-gold)' }}>bandlakamesh.github.io/rs-towers-ganesh-tracker</a>
+            🪔 <strong>R.S Towers Ganesh Utsav 2026</strong> • <a href={GITHUB_PAGES_LIVE_URL} target="_blank" rel="noreferrer" style={{ color: 'var(--text-gold)' }}>bandlakamesh.github.io/rs-towers-ganesh-tracker</a>
           </div>
           <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
             <button
               onClick={handleResetData}
-              style={{ background: 'none', border: 'none', color: '#F87171', cursor: 'pointer', fontSize: '0.8rem' }}
+              style={{ background: 'none', border: 'none', color: '#F87171', cursor: 'pointer', fontSize: '0.78rem' }}
             >
-              Reset Sample Data
+              Reset Data
             </button>
             <span>Ganpati Bappa Morya! 🙏</span>
           </div>
