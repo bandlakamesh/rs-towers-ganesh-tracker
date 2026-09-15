@@ -69,16 +69,16 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '16px', marginBottom: '20px' }}>
         <div>
           <h2 style={{ fontSize: '1.25rem', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Receipt style={{ color: 'var(--primary-gold)' }} /> Chanda Collection Log
+            <Receipt style={{ color: '#2563EB' }} /> Chanda Collection Log
           </h2>
-          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0 }}>
+          <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0 }}>
             List of all resident contributions & digital receipts
           </p>
         </div>
 
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
           <div style={{ position: 'relative', width: '200px' }}>
-            <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+            <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
             <input
               type="text"
               className="form-control"
@@ -101,17 +101,17 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
             <option value="NetBanking">NetBanking</option>
           </select>
 
-          <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}>
+          <button className="app-btn app-btn-primary" onClick={() => setIsModalOpen(true)}>
             <Plus size={18} /> Record Payment
           </button>
         </div>
       </div>
 
       {/* Chanda Table */}
-      <div className="glass-card" style={{ overflowX: 'auto', padding: 0 }}>
+      <div className="app-card" style={{ overflowX: 'auto', padding: 0 }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
           <thead>
-            <tr style={{ background: 'rgba(255, 255, 255, 0.04)', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', color: 'var(--text-gold)', fontFamily: 'var(--font-heading)' }}>
+            <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', color: '#1D4ED8', fontFamily: 'var(--font-title)' }}>
               <th style={{ padding: '14px 16px' }}>Receipt #</th>
               <th style={{ padding: '14px 16px' }}>Flat</th>
               <th style={{ padding: '14px 16px' }}>Resident Name</th>
@@ -124,22 +124,22 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
           </thead>
           <tbody>
             {filteredList.map((c) => (
-              <tr key={c.id} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                <td style={{ padding: '12px 16px', fontWeight: 600, color: 'var(--text-gold)' }}>{c.receiptNo}</td>
+              <tr key={c.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
+                <td style={{ padding: '12px 16px', fontWeight: 600, color: '#1D4ED8' }}>{c.receiptNo}</td>
                 <td style={{ padding: '12px 16px' }}>
-                  <span className="badge badge-partial" style={{ color: '#FFF' }}>Flat {c.flatNo}</span>
+                  <span style={{ color: '#0F172A', background: '#F1F5F9', border: '1px solid #CBD5E1', padding: '3px 8px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 600 }}>Flat {c.flatNo}</span>
                 </td>
-                <td style={{ padding: '12px 16px', fontWeight: 600 }}>{c.residentName}</td>
-                <td style={{ padding: '12px 16px', fontWeight: 700, color: '#34D399' }}>
+                <td style={{ padding: '12px 16px', fontWeight: 600, color: '#0F172A' }}>{c.residentName}</td>
+                <td style={{ padding: '12px 16px', fontWeight: 700, color: '#059669' }}>
                   ₹{c.amount.toLocaleString('en-IN')}
                 </td>
                 <td style={{ padding: '12px 16px' }}>
-                  <span style={{ background: 'rgba(255,255,255,0.08)', padding: '3px 8px', borderRadius: '4px', fontSize: '0.75rem' }}>
+                  <span style={{ background: '#EFF6FF', color: '#1D4ED8', padding: '3px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
                     {c.paymentMode}
                   </span>
                 </td>
-                <td style={{ padding: '12px 16px', color: 'var(--text-muted)' }}>{c.date}</td>
-                <td style={{ padding: '12px 16px', color: 'var(--text-muted)', fontSize: '0.82rem' }}>{c.notes || '-'}</td>
+                <td style={{ padding: '12px 16px', color: 'var(--text-secondary)' }}>{c.date}</td>
+                <td style={{ padding: '12px 16px', color: 'var(--text-secondary)', fontSize: '0.82rem' }}>{c.notes || '-'}</td>
                 <td style={{ padding: '12px 16px', textAlign: 'right' }}>
                   <button
                     onClick={() => {
@@ -147,7 +147,7 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
                         onDeleteChanda(c.id);
                       }
                     }}
-                    style={{ background: 'none', border: 'none', color: '#F87171', cursor: 'pointer', opacity: 0.7 }}
+                    style={{ background: 'none', border: 'none', color: '#DC2626', cursor: 'pointer', opacity: 0.8 }}
                     title="Delete Record"
                   >
                     <Trash2 size={16} />
@@ -158,7 +158,7 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
 
             {filteredList.length === 0 && (
               <tr>
-                <td colSpan={8} style={{ padding: '24px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                <td colSpan={8} style={{ padding: '24px', textAlign: 'center', color: 'var(--text-secondary)' }}>
                   No Chanda records found.
                 </td>
               </tr>
@@ -171,7 +171,7 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal-container">
-            <h3 style={{ fontSize: '1.2rem', marginBottom: '16px', color: 'var(--text-gold)' }}>
+            <h3 style={{ fontSize: '1.2rem', marginBottom: '16px', color: '#1D4ED8' }}>
               ➕ Record Chanda Payment
             </h3>
             
@@ -266,10 +266,10 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '20px' }}>
-                <button type="button" className="btn btn-secondary" onClick={() => setIsModalOpen(false)}>
+                <button type="button" className="app-btn app-btn-secondary" onClick={() => setIsModalOpen(false)}>
                   Cancel
                 </button>
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="app-btn app-btn-primary">
                   Save Receipt
                 </button>
               </div>

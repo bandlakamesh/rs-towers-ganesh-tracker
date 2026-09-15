@@ -88,16 +88,16 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '16px', marginBottom: '20px' }}>
         <div>
           <h2 style={{ fontSize: '1.25rem', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Receipt style={{ color: '#F87171' }} /> Ganesh Utsav Expense Register
+            <Receipt style={{ color: '#DC2626' }} /> Ganesh Utsav Expense Register
           </h2>
-          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0 }}>
+          <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0 }}>
             Categorized expenses paid by committee members with bill photo proofs
           </p>
         </div>
 
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
           <div style={{ position: 'relative', width: '200px' }}>
-            <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+            <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
             <input
               type="text"
               className="form-control"
@@ -120,17 +120,17 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
             ))}
           </select>
 
-          <button className="btn btn-primary" onClick={() => setIsModalOpen(true)} style={{ background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)', color: '#FFF' }}>
+          <button className="app-btn" onClick={() => setIsModalOpen(true)} style={{ background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)', color: '#FFF' }}>
             <Plus size={18} /> Record Expense
           </button>
         </div>
       </div>
 
       {/* Expense Cards / Table */}
-      <div className="glass-card" style={{ overflowX: 'auto', padding: 0 }}>
+      <div className="app-card" style={{ overflowX: 'auto', padding: 0 }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
           <thead>
-            <tr style={{ background: 'rgba(255, 255, 255, 0.04)', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', color: 'var(--text-gold)', fontFamily: 'var(--font-heading)' }}>
+            <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', color: '#1D4ED8', fontFamily: 'var(--font-title)' }}>
               <th style={{ padding: '14px 16px' }}>Category</th>
               <th style={{ padding: '14px 16px' }}>Description</th>
               <th style={{ padding: '14px 16px' }}>Amount</th>
@@ -143,34 +143,34 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
           </thead>
           <tbody>
             {filteredList.map((e) => (
-              <tr key={e.id} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
+              <tr key={e.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
                 <td style={{ padding: '12px 16px' }}>
-                  <span style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#F87171', border: '1px solid rgba(239, 68, 68, 0.3)', padding: '3px 8px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 600 }}>
+                  <span style={{ background: '#FEF2F2', color: '#DC2626', border: '1px solid #FECACA', padding: '3px 8px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 600 }}>
                     {e.category}
                   </span>
                 </td>
-                <td style={{ padding: '12px 16px', fontWeight: 600 }}>{e.description}</td>
-                <td style={{ padding: '12px 16px', fontWeight: 700, color: '#F87171' }}>
+                <td style={{ padding: '12px 16px', fontWeight: 600, color: '#0F172A' }}>{e.description}</td>
+                <td style={{ padding: '12px 16px', fontWeight: 700, color: '#DC2626' }}>
                   ₹{e.amount.toLocaleString('en-IN')}
                 </td>
-                <td style={{ padding: '12px 16px', color: 'var(--text-gold)', fontWeight: 600 }}>{e.paidBy}</td>
+                <td style={{ padding: '12px 16px', color: '#1D4ED8', fontWeight: 600 }}>{e.paidBy}</td>
                 <td style={{ padding: '12px 16px' }}>
-                  <span style={{ background: 'rgba(255,255,255,0.08)', padding: '3px 8px', borderRadius: '4px', fontSize: '0.75rem' }}>
+                  <span style={{ background: '#EFF6FF', color: '#1D4ED8', padding: '3px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
                     {e.paymentMode}
                   </span>
                 </td>
-                <td style={{ padding: '12px 16px', color: 'var(--text-muted)' }}>{e.date}</td>
+                <td style={{ padding: '12px 16px', color: 'var(--text-secondary)' }}>{e.date}</td>
                 <td style={{ padding: '12px 16px' }}>
                   {e.billUrl ? (
                     <button
-                      className="btn btn-secondary"
+                      className="app-btn app-btn-secondary"
                       onClick={() => setSelectedBillImage(e.billUrl!)}
                       style={{ padding: '4px 8px', fontSize: '0.75rem' }}
                     >
                       <Eye size={12} /> View Bill
                     </button>
                   ) : (
-                    <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>No Bill</span>
+                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem' }}>No Bill</span>
                   )}
                 </td>
                 <td style={{ padding: '12px 16px', textAlign: 'right' }}>
@@ -180,7 +180,7 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
                         onDeleteExpense(e.id);
                       }
                     }}
-                    style={{ background: 'none', border: 'none', color: '#F87171', cursor: 'pointer', opacity: 0.7 }}
+                    style={{ background: 'none', border: 'none', color: '#DC2626', cursor: 'pointer', opacity: 0.8 }}
                     title="Delete Record"
                   >
                     <Trash2 size={16} />
@@ -191,7 +191,7 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
 
             {filteredList.length === 0 && (
               <tr>
-                <td colSpan={8} style={{ padding: '24px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                <td colSpan={8} style={{ padding: '24px', textAlign: 'center', color: 'var(--text-secondary)' }}>
                   No expense records found.
                 </td>
               </tr>
@@ -204,7 +204,7 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal-container">
-            <h3 style={{ fontSize: '1.2rem', marginBottom: '16px', color: '#F87171' }}>
+            <h3 style={{ fontSize: '1.2rem', marginBottom: '16px', color: '#DC2626' }}>
               💸 Record New Expense
             </h3>
 
@@ -301,15 +301,15 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
 
               {billUrl && (
                 <div style={{ marginBottom: '16px', textAlign: 'center' }}>
-                  <img src={billUrl} alt="Bill Preview" style={{ maxHeight: '120px', borderRadius: '8px', border: '1px solid var(--primary-gold)' }} />
+                  <img src={billUrl} alt="Bill Preview" style={{ maxHeight: '120px', borderRadius: '8px', border: '1px solid #2563EB' }} />
                 </div>
               )}
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '20px' }}>
-                <button type="button" className="btn btn-secondary" onClick={() => setIsModalOpen(false)}>
+                <button type="button" className="app-btn app-btn-secondary" onClick={() => setIsModalOpen(false)}>
                   Cancel
                 </button>
-                <button type="submit" className="btn btn-primary" style={{ background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)', color: '#FFF' }}>
+                <button type="submit" className="app-btn" style={{ background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)', color: '#FFF' }}>
                   Save Expense
                 </button>
               </div>
@@ -322,10 +322,10 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
       {selectedBillImage && (
         <div className="modal-overlay" onClick={() => setSelectedBillImage(null)}>
           <div className="modal-container" style={{ textAlign: 'center', maxWidth: '650px' }} onClick={(e) => e.stopPropagation()}>
-            <h3 style={{ marginBottom: '16px' }}>🧾 Bill Receipt Photo</h3>
+            <h3 style={{ marginBottom: '16px', color: '#0F172A' }}>🧾 Bill Receipt Photo</h3>
             <img src={selectedBillImage} alt="Bill Receipt" style={{ maxWidth: '100%', maxHeight: '70vh', borderRadius: '12px' }} />
             <div style={{ marginTop: '16px' }}>
-              <button className="btn btn-secondary" onClick={() => setSelectedBillImage(null)}>Close</button>
+              <button className="app-btn app-btn-secondary" onClick={() => setSelectedBillImage(null)}>Close</button>
             </div>
           </div>
         </div>

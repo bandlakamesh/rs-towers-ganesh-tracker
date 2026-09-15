@@ -157,7 +157,7 @@ export const App: React.FC = () => {
       />
 
       {/* Realtime Live Cloud Sync Indicator */}
-      <div style={{ background: 'rgba(16, 185, 129, 0.1)', borderBottom: '1px solid rgba(16, 185, 129, 0.2)', padding: '6px 16px', textAlign: 'center', fontSize: '0.78rem', color: '#34D399', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+      <div style={{ background: '#ECFDF5', borderBottom: '1px solid #A7F3D0', padding: '6px 16px', textAlign: 'center', fontSize: '0.78rem', color: '#059669', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
         <Radio size={13} style={{ animation: 'pulse 1.5s infinite' }} />
         <span>
           <strong>Live Multi-User Cloud Sync Active</strong>
@@ -308,15 +308,15 @@ export const App: React.FC = () => {
       </div>
 
       {/* Footer */}
-      <footer style={{ marginTop: '40px', padding: '24px 20px', textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-secondary)', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+      <footer style={{ marginTop: '40px', padding: '24px 20px', textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-secondary)', borderTop: '1px solid #E2E8F0', background: '#FFFFFF' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
           <div>
-            🪔 <strong>R.S Towers Ganesh Utsav 2026</strong> • <a href={GITHUB_PAGES_LIVE_URL} target="_blank" rel="noreferrer" style={{ color: 'var(--text-gold)' }}>bandlakamesh.github.io/rs-towers-ganesh-tracker</a>
+            🪔 <strong>R.S Towers Ganesh Utsav 2026</strong> • <a href={GITHUB_PAGES_LIVE_URL} target="_blank" rel="noreferrer" style={{ color: '#1D4ED8' }}>bandlakamesh.github.io/rs-towers-ganesh-tracker</a>
           </div>
           <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
             <button
               onClick={handleResetData}
-              style={{ background: 'none', border: 'none', color: '#F87171', cursor: 'pointer', fontSize: '0.78rem' }}
+              style={{ background: 'none', border: 'none', color: '#DC2626', cursor: 'pointer', fontSize: '0.78rem' }}
             >
               Reset Data
             </button>
