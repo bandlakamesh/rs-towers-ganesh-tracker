@@ -222,8 +222,6 @@ export const App: React.FC = () => {
             onAddChanda={handleAddChanda}
             onEditChanda={handleEditChanda}
             onDeleteChanda={handleDeleteChanda}
-            prefillFlatNo={prefillFlatPayment?.flatNo}
-            prefillResidentName={prefillFlatPayment?.residentName}
           />
         )}
 
