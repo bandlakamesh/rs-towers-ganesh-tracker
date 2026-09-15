@@ -363,7 +363,7 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
                   className="form-control"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="e.g. Pending payment or UPI Ref #987123"
+                  placeholder=""
                 />
               </div>
 
