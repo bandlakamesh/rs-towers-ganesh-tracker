@@ -1,0 +1,283 @@
+import React, { useState } from 'react';
+import { Plus, Trash2, Receipt, Search } from 'lucide-react';
+import type { ChandaRecord, PaymentMode } from '../types';
+
+interface ChandaLogProps {
+  chandaList: ChandaRecord[];
+  onAddChanda: (record: Omit<ChandaRecord, 'id' | 'createdAt'>) => void;
+  onDeleteChanda: (id: string) => void;
+  prefillFlatNo?: string;
+  prefillResidentName?: string;
+}
+
+export const ChandaLog: React.FC<ChandaLogProps> = ({
+  chandaList,
+  onAddChanda,
+  onDeleteChanda,
+  prefillFlatNo = '',
+  prefillResidentName = '',
+}) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [modeFilter, setModeFilter] = useState<string>('All');
+
+  // Form State
+  const [flatNo, setFlatNo] = useState(prefillFlatNo || '101');
+  const [residentName, setResidentName] = useState(prefillResidentName || '');
+  const [amount, setAmount] = useState<number>(2500);
+  const [paymentMode, setPaymentMode] = useState<PaymentMode>('UPI');
+  const [receiptNo, setReceiptNo] = useState(`RSG-2026-${String(chandaList.length + 1).padStart(3, '0')}`);
+  const [notes, setNotes] = useState('');
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!flatNo || !residentName || amount <= 0) {
+      alert('Please fill out Flat No, Resident Name, and a valid Amount.');
+      return;
+    }
+
+    onAddChanda({
+      flatNo,
+      residentName,
+      amount: Number(amount),
+      date,
+      paymentMode,
+      status: 'Received',
+      receiptNo: receiptNo || `RSG-${Date.now().toString().slice(-6)}`,
+      notes,
+    });
+
+    setIsModalOpen(false);
+    setNotes('');
+  };
+
+  const filteredList = chandaList.filter((c) => {
+    const matchesSearch =
+      c.flatNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      c.residentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      c.receiptNo.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesMode = modeFilter === 'All' ? true : c.paymentMode === modeFilter;
+    return matchesSearch && matchesMode;
+  });
+
+  return (
+    <div style={{ marginBottom: '32px' }}>
+      
+      {/* Header Bar */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '16px', marginBottom: '20px' }}>
+        <div>
+          <h2 style={{ fontSize: '1.25rem', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Receipt style={{ color: 'var(--primary-gold)' }} /> Chanda Collection Log
+          </h2>
+          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0 }}>
+            List of all resident contributions & digital receipts
+          </p>
+        </div>
+
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+          <div style={{ position: 'relative', width: '200px' }}>
+            <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Search receipts..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{ paddingLeft: '32px' }}
+            />
+          </div>
+
+          <select
+            className="form-control"
+            value={modeFilter}
+            onChange={(e) => setModeFilter(e.target.value)}
+            style={{ width: '130px' }}
+          >
+            <option value="All">All Modes</option>
+            <option value="UPI">UPI</option>
+            <option value="Cash">Cash</option>
+            <option value="NetBanking">NetBanking</option>
+          </select>
+
+          <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}>
+            <Plus size={18} /> Record Payment
+          </button>
+        </div>
+      </div>
+
+      {/* Chanda Table */}
+      <div className="glass-card" style={{ overflowX: 'auto', padding: 0 }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
+          <thead>
+            <tr style={{ background: 'rgba(255, 255, 255, 0.04)', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', color: 'var(--text-gold)', fontFamily: 'var(--font-heading)' }}>
+              <th style={{ padding: '14px 16px' }}>Receipt #</th>
+              <th style={{ padding: '14px 16px' }}>Flat</th>
+              <th style={{ padding: '14px 16px' }}>Resident Name</th>
+              <th style={{ padding: '14px 16px' }}>Amount</th>
+              <th style={{ padding: '14px 16px' }}>Mode</th>
+              <th style={{ padding: '14px 16px' }}>Date</th>
+              <th style={{ padding: '14px 16px' }}>Notes</th>
+              <th style={{ padding: '14px 16px', textAlign: 'right' }}>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredList.map((c) => (
+              <tr key={c.id} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
+                <td style={{ padding: '12px 16px', fontWeight: 600, color: 'var(--text-gold)' }}>{c.receiptNo}</td>
+                <td style={{ padding: '12px 16px' }}>
+                  <span className="badge badge-partial" style={{ color: '#FFF' }}>Flat {c.flatNo}</span>
+                </td>
+                <td style={{ padding: '12px 16px', fontWeight: 600 }}>{c.residentName}</td>
+                <td style={{ padding: '12px 16px', fontWeight: 700, color: '#34D399' }}>
+                  ₹{c.amount.toLocaleString('en-IN')}
+                </td>
+                <td style={{ padding: '12px 16px' }}>
+                  <span style={{ background: 'rgba(255,255,255,0.08)', padding: '3px 8px', borderRadius: '4px', fontSize: '0.75rem' }}>
+                    {c.paymentMode}
+                  </span>
+                </td>
+                <td style={{ padding: '12px 16px', color: 'var(--text-muted)' }}>{c.date}</td>
+                <td style={{ padding: '12px 16px', color: 'var(--text-muted)', fontSize: '0.82rem' }}>{c.notes || '-'}</td>
+                <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                  <button
+                    onClick={() => {
+                      if (confirm(`Delete receipt ${c.receiptNo} for Flat ${c.flatNo}?`)) {
+                        onDeleteChanda(c.id);
+                      }
+                    }}
+                    style={{ background: 'none', border: 'none', color: '#F87171', cursor: 'pointer', opacity: 0.7 }}
+                    title="Delete Record"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </td>
+              </tr>
+            ))}
+
+            {filteredList.length === 0 && (
+              <tr>
+                <td colSpan={8} style={{ padding: '24px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                  No Chanda records found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Add Chanda Modal */}
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-container">
+            <h3 style={{ fontSize: '1.2rem', marginBottom: '16px', color: 'var(--text-gold)' }}>
+              ➕ Record Chanda Payment
+            </h3>
+            
+            <form onSubmit={handleSubmit}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className="form-group">
+                  <label>Flat Number</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={flatNo}
+                    onChange={(e) => setFlatNo(e.target.value)}
+                    required
+                    placeholder="e.g. 101, 202"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Resident Name</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={residentName}
+                    onChange={(e) => setResidentName(e.target.value)}
+                    required
+                    placeholder="Full Name"
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className="form-group">
+                  <label>Amount (₹)</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    value={amount}
+                    onChange={(e) => setAmount(Number(e.target.value))}
+                    required
+                    min={1}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Payment Mode</label>
+                  <select
+                    className="form-control"
+                    value={paymentMode}
+                    onChange={(e: any) => setPaymentMode(e.target.value)}
+                  >
+                    <option value="UPI">UPI (GPay / PhonePe / Paytm)</option>
+                    <option value="Cash">Cash</option>
+                    <option value="NetBanking">NetBanking / NEFT</option>
+                    <option value="Cheque">Cheque</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className="form-group">
+                  <label>Date</label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Receipt Number</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={receiptNo}
+                    onChange={(e) => setReceiptNo(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Notes / Transaction Reference (Optional)</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="e.g. UPI Ref #987123 or Cash handed to Treasurer"
+                />
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '20px' }}>
+                <button type="button" className="btn btn-secondary" onClick={() => setIsModalOpen(false)}>
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Save Receipt
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+};
