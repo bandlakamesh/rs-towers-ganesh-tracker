@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "deploy": "npm run build && powershell -Command \"Remove-Item -Path 'assets' -Recurse -Force -ErrorAction SilentlyContinue; Copy-Item -Path 'dist\\index.html' -Destination 'index.html' -Force; Copy-Item -Path 'dist\\assets' -Destination 'assets' -Recurse -Force; git add .; git commit -m 'Deploy update to main'; git push origin main\"",
+    "deploy": "powershell -Command \"git checkout index.html; Remove-Item -Path 'dist' -Recurse -Force -ErrorAction SilentlyContinue; Remove-Item -Path 'assets' -Recurse -Force -ErrorAction SilentlyContinue; npm run build; Copy-Item -Path 'dist\\assets' -Destination 'assets' -Recurse -Force; Copy-Item -Path 'dist\\index.html' -Destination 'index.html' -Force; git add .; git commit -m 'Deploy update to main'; git checkout index.html; git push origin main\"",
     "lint": "oxlint",
     "preview": "vite preview"
   },
