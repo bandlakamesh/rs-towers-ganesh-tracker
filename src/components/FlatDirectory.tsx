@@ -43,7 +43,7 @@ export const FlatDirectory: React.FC<FlatDirectoryProps> = ({
         <div>
           <h2 style={{ fontSize: '1.15rem', margin: 0 }}>🏢 RS Towers Flats Directory</h2>
           <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', margin: 0 }}>
-            Tap any flat to record payment or send WhatsApp reminder
+            Flat-wise donation collection status and WhatsApp reminders
           </p>
         </div>
 
@@ -97,8 +97,9 @@ export const FlatDirectory: React.FC<FlatDirectoryProps> = ({
                 padding: '16px',
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'space-between',
-                border: isFullyPaid ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(239, 68, 68, 0.3)',
+                justify: 'space-between',
+                border: isFullyPaid ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(239, 68, 68, 0.4)',
+                background: isFullyPaid ? 'rgba(16, 185, 129, 0.04)' : 'var(--bg-card)',
               }}
             >
               <div>
@@ -125,7 +126,7 @@ export const FlatDirectory: React.FC<FlatDirectoryProps> = ({
                 </div>
 
                 {/* Contribution details */}
-                <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '12px' }}>
+                <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
                   <div>Paid: <strong style={{ color: isFullyPaid ? '#34D399' : '#FFF' }}>₹{flat.paidAmount.toLocaleString('en-IN')}</strong> / ₹{flat.targetAmount.toLocaleString('en-IN')}</div>
                   {!isFullyPaid && (
                     <div style={{ color: '#F87171', fontSize: '0.76rem', fontWeight: 600, marginTop: '2px' }}>
@@ -135,17 +136,17 @@ export const FlatDirectory: React.FC<FlatDirectoryProps> = ({
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div style={{ display: 'flex', gap: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '10px' }}>
-                <button
-                  className="app-btn app-btn-secondary"
-                  onClick={() => onSelectFlatPayment(flat.flatNo, flat.residentName)}
-                  style={{ flex: 1, padding: '6px 10px', fontSize: '0.78rem' }}
-                >
-                  <Plus size={14} /> Record
-                </button>
+              {/* Action Buttons: Shown ONLY for Pending / Partial flats */}
+              {!isFullyPaid && (
+                <div style={{ display: 'flex', gap: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '10px', marginTop: '12px' }}>
+                  <button
+                    className="app-btn app-btn-secondary"
+                    onClick={() => onSelectFlatPayment(flat.flatNo, flat.residentName)}
+                    style={{ flex: 1, padding: '6px 10px', fontSize: '0.78rem' }}
+                  >
+                    <Plus size={14} /> Record
+                  </button>
 
-                {!isFullyPaid && (
                   <button
                     className="app-btn app-btn-whatsapp"
                     onClick={() => handleSendReminder(flat)}
@@ -153,8 +154,8 @@ export const FlatDirectory: React.FC<FlatDirectoryProps> = ({
                   >
                     <Send size={13} /> Reminder
                   </button>
-                )}
-              </div>
+                </div>
+              )}
 
             </div>
           );
