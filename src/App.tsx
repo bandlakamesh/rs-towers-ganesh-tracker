@@ -4,7 +4,6 @@ import { Building2, Receipt, Calendar, PieChart, Plus, Share2 } from 'lucide-rea
 import type { AppState, ChandaRecord, ExpenseRecord } from './types';
 import {
   loadAppState,
-  resetToInitialState,
   fetchLatestCloudState,
   syncToCloudRemote,
 } from './utils/cloudStorage';
@@ -17,7 +16,6 @@ import { ExpenseLog } from './components/ExpenseLog';
 import { WhatsAppShareModal } from './components/WhatsAppShareModal';
 import { EventTimeline } from './components/EventTimeline';
 import { AnalyticsCharts } from './components/AnalyticsCharts';
-import { GITHUB_PAGES_LIVE_URL } from './utils/whatsappFormatter';
 
 export const App: React.FC = () => {
   const [appState, setAppState] = useState<AppState>(() => loadAppState());
@@ -132,13 +130,6 @@ export const App: React.FC = () => {
   const handleSelectFlatPayment = (flatNo: string, residentName: string) => {
     setPrefillFlatPayment({ flatNo, residentName });
     setActiveTab('chanda');
-  };
-
-  const handleResetData = () => {
-    if (confirm('Are you sure you want to reset all data back to default sample records?')) {
-      const reset = resetToInitialState();
-      setAppState(reset);
-    }
   };
 
   const handleFABClick = () => {
