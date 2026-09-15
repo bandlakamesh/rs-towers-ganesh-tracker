@@ -23,8 +23,8 @@ export const ChandaLog: React.FC<ChandaLogProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [modeFilter, setModeFilter] = useState<string>('All');
 
-  // Sorting state
-  const [sortField, setSortField] = useState<SortField>('receiptNo');
+  // Sorting state (default sort by Flat Number)
+  const [sortField, setSortField] = useState<SortField>('flatNo');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   // Form State

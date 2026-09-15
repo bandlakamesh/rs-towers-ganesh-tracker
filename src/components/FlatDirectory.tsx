@@ -15,16 +15,22 @@ export const FlatDirectory: React.FC<FlatDirectoryProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'All' | 'Received' | 'Pending'>('All');
 
-  const filteredFlats = flats.filter((f) => {
-    const matchesSearch =
-      f.flatNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      f.residentName.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredFlats = flats
+    .filter((f) => {
+      const matchesSearch =
+        f.flatNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        f.residentName.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesStatus =
-      statusFilter === 'All' ? true : f.status === statusFilter;
+      const matchesStatus =
+        statusFilter === 'All' ? true : f.status === statusFilter;
 
-    return matchesSearch && matchesStatus;
-  });
+      return matchesSearch && matchesStatus;
+    })
+    .sort((a, b) => {
+      const numA = parseInt(a.flatNo.replace(/\D/g, ''), 10) || 0;
+      const numB = parseInt(b.flatNo.replace(/\D/g, ''), 10) || 0;
+      return numA - numB;
+    });
 
   const paidCount = flats.filter((f) => f.status === 'Received').length;
   const pendingCount = flats.filter((f) => f.status !== 'Received').length;

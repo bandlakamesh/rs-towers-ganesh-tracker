@@ -35,6 +35,7 @@ export const saveAppState = (state: AppState): void => {
 // Fetch live state from cloud database (Called automatically every few seconds)
 export const fetchLatestCloudState = async (): Promise<AppState | null> => {
   try {
+    const localState = loadAppState();
     const res = await fetch(`${PUBLIC_CLOUD_ENDPOINT}/latest`, {
       headers: {
         'X-Master-Key': MASTER_KEY,
@@ -44,9 +45,18 @@ export const fetchLatestCloudState = async (): Promise<AppState | null> => {
     if (res.ok) {
       const json = await res.json();
       if (json.record && Array.isArray(json.record.chandaList) && Array.isArray(json.record.expenseList)) {
-        const synced = syncFlatsWithChanda(json.record);
-        saveAppState(synced);
-        return synced;
+        const cloudState = syncFlatsWithChanda(json.record);
+        const localLastUpdated = localState?.lastUpdated || 0;
+        const cloudLastUpdated = cloudState.lastUpdated || 0;
+
+        // ONLY adopt cloud state if it is strictly NEWER than local state!
+        if (cloudLastUpdated > localLastUpdated) {
+          saveAppState(cloudState);
+          return cloudState;
+        } else if (localLastUpdated > cloudLastUpdated) {
+          // Local state is newer! Sync local state back up to cloud
+          syncToCloudRemote(localState);
+        }
       }
     }
   } catch (err) {
