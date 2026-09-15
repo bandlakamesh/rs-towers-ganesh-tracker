@@ -1,7 +1,8 @@
 import React, { useRef } from 'react';
-import { Share2, Download, Upload, Globe, Sparkles } from 'lucide-react';
-import type { AppState } from '../types';
-import { exportAppStateJSON, importAppStateJSON } from '../utils/cloudStorage';
+import { Share2, Download, Upload, Globe, Sparkles, FileSpreadsheet } from 'lucide-react';
+import * as XLSX from 'xlsx';
+import type { AppState, ChandaRecord, ExpenseRecord } from '../types';
+import { exportAppStateJSON, importAppStateJSON, syncToCloudRemote, syncFlatsWithChanda } from '../utils/cloudStorage';
 import { GITHUB_PAGES_LIVE_URL } from '../utils/whatsappFormatter';
 
 interface NavbarProps {
@@ -17,13 +18,14 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenWhatsAppModal,
   onOpenDeployModal,
 }) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const jsonInputRef = useRef<HTMLInputElement>(null);
+  const excelInputRef = useRef<HTMLInputElement>(null);
 
   const handleExport = () => {
     exportAppStateJSON(state);
   };
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleJSONFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       try {
@@ -34,6 +36,80 @@ export const Navbar: React.FC<NavbarProps> = ({
         alert('❌ Error restoring backup: ' + err.message);
       }
     }
+  };
+
+  const handleExcelImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        const bstr = evt.target?.result;
+        const wb = XLSX.read(bstr, { type: 'binary' });
+        
+        let newChandaList: ChandaRecord[] = [...state.chandaList];
+        let newExpenseList: ExpenseRecord[] = [...state.expenseList];
+
+        wb.SheetNames.forEach((sheetName) => {
+          const sheet = wb.Sheets[sheetName];
+          const rows: any[] = XLSX.utils.sheet_to_json(sheet);
+
+          rows.forEach((row, idx) => {
+            // Check if row is a Chanda / Contribution entry
+            const flat = row['Flat'] || row['Flat No'] || row['FlatNo'] || row['Unit'];
+            const resident = row['Resident'] || row['Resident Name'] || row['Name'] || row['Owner'];
+            const chandaAmount = row['Amount'] || row['Chanda'] || row['Contribution'] || row['Paid'];
+            
+            if (flat && resident && chandaAmount) {
+              newChandaList.push({
+                id: `chanda-excel-${Date.now()}-${idx}`,
+                flatNo: String(flat),
+                residentName: String(resident),
+                amount: Number(chandaAmount),
+                date: row['Date'] || new Date().toISOString().split('T')[0],
+                paymentMode: row['Mode'] || row['Payment Mode'] || 'UPI',
+                status: 'Received',
+                receiptNo: row['Receipt'] || `RSG-EXCEL-${idx + 1}`,
+                notes: row['Notes'] || 'Imported from Excel',
+                createdAt: Date.now() + idx,
+              });
+            }
+
+            // Check if row is an Expense entry
+            const expDesc = row['Description'] || row['Expense'] || row['Item'];
+            const expAmount = row['Expense Amount'] || row['Cost'] || (row['Amount'] && !flat ? row['Amount'] : null);
+            if (expDesc && expAmount) {
+              newExpenseList.push({
+                id: `exp-excel-${Date.now()}-${idx}`,
+                category: row['Category'] || 'Miscellaneous',
+                description: String(expDesc),
+                amount: Number(expAmount),
+                paidBy: row['Paid By'] || row['PaidBy'] || 'Committee',
+                date: row['Date'] || new Date().toISOString().split('T')[0],
+                paymentMode: row['Mode'] || 'UPI',
+                createdAt: Date.now() + idx,
+              });
+            }
+          });
+        });
+
+        const newState: AppState = syncFlatsWithChanda({
+          ...state,
+          chandaList: newChandaList,
+          expenseList: newExpenseList,
+          lastUpdated: Date.now(),
+        });
+
+        onStateUpdate(newState);
+        syncToCloudRemote(newState);
+        alert(`✅ Excel Imported Successfully! Processed records from ${wb.SheetNames.length} sheet(s).`);
+
+      } catch (err: any) {
+        alert('❌ Error reading Excel file: ' + err.message);
+      }
+    };
+    reader.readAsBinaryString(file);
   };
 
   return (
@@ -76,23 +152,36 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Share2 size={18} /> Share on WhatsApp
           </button>
 
-          <button className="btn btn-primary" onClick={onOpenDeployModal} style={{ background: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)', color: '#FFF' }}>
-            <Globe size={18} /> Deploy to GitHub
+          <button className="btn btn-primary" onClick={() => excelInputRef.current?.click()} style={{ background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)', color: '#FFF' }}>
+            <FileSpreadsheet size={18} /> Import Excel / CSV
+          </button>
+
+          <button className="btn btn-secondary" onClick={onOpenDeployModal} style={{ background: 'rgba(255, 255, 255, 0.08)' }}>
+            <Globe size={16} /> Deploy
           </button>
 
           <button className="btn btn-secondary" onClick={handleExport} title="Download JSON Backup">
             <Download size={16} /> Export
           </button>
 
-          <button className="btn btn-secondary" onClick={() => fileInputRef.current?.click()} title="Restore JSON Backup">
-            <Upload size={16} /> Import
+          <button className="btn btn-secondary" onClick={() => jsonInputRef.current?.click()} title="Restore JSON Backup">
+            <Upload size={16} /> Import JSON
           </button>
-          
+
+          {/* Hidden File Inputs */}
           <input
             type="file"
-            ref={fileInputRef}
-            onChange={handleFileChange}
+            ref={jsonInputRef}
+            onChange={handleJSONFileChange}
             accept=".json"
+            style={{ display: 'none' }}
+          />
+
+          <input
+            type="file"
+            ref={excelInputRef}
+            onChange={handleExcelImport}
+            accept=".xlsx, .xls, .csv"
             style={{ display: 'none' }}
           />
         </div>
