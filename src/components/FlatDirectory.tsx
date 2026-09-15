@@ -98,38 +98,38 @@ export const FlatDirectory: React.FC<FlatDirectoryProps> = ({
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                border: isFullyPaid ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(239, 68, 68, 0.4)',
-                background: isFullyPaid ? 'rgba(16, 185, 129, 0.04)' : 'var(--bg-card)',
+                border: isFullyPaid ? '1px solid #A7F3D0' : '1px solid #FECACA',
+                background: isFullyPaid ? '#F0FDF4' : '#FFFFFF',
               }}
             >
               <div>
                 {/* Flat Number & Status Badge */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--text-gold)', background: 'rgba(245, 158, 11, 0.12)', padding: '3px 10px', borderRadius: '8px' }}>
+                  <span style={{ fontSize: '0.92rem', fontWeight: 800, color: '#1D4ED8', background: '#EFF6FF', padding: '3px 10px', borderRadius: '8px' }}>
                     Flat #{flat.flatNo}
                   </span>
 
                   {isFullyPaid ? (
-                    <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#34D399', background: 'rgba(16, 185, 129, 0.15)', padding: '3px 8px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#059669', background: '#ECFDF5', padding: '3px 8px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                       <CheckCircle2 size={12} /> Paid
                     </span>
                   ) : (
-                    <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#F87171', background: 'rgba(239, 68, 68, 0.15)', padding: '3px 8px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#DC2626', background: '#FEF2F2', padding: '3px 8px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                       <AlertCircle size={12} /> Pending
                     </span>
                   )}
                 </div>
 
                 {/* Resident Name */}
-                <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#FFF', marginBottom: '4px' }}>
+                <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0F172A', marginBottom: '4px' }}>
                   {flat.residentName || 'Owner'}
                 </div>
 
                 {/* Contribution details */}
                 <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-                  <div>Paid: <strong style={{ color: isFullyPaid ? '#34D399' : '#FFF' }}>₹{flat.paidAmount.toLocaleString('en-IN')}</strong> / ₹{flat.targetAmount.toLocaleString('en-IN')}</div>
+                  <div>Paid: <strong style={{ color: isFullyPaid ? '#059669' : '#0F172A' }}>₹{flat.paidAmount.toLocaleString('en-IN')}</strong> / ₹{flat.targetAmount.toLocaleString('en-IN')}</div>
                   {!isFullyPaid && (
-                    <div style={{ color: '#F87171', fontSize: '0.76rem', fontWeight: 600, marginTop: '2px' }}>
+                    <div style={{ color: '#DC2626', fontSize: '0.76rem', fontWeight: 600, marginTop: '2px' }}>
                       Due: ₹{pendingAmt.toLocaleString('en-IN')}
                     </div>
                   )}
@@ -138,7 +138,7 @@ export const FlatDirectory: React.FC<FlatDirectoryProps> = ({
 
               {/* Action Buttons: Shown ONLY for Pending / Partial flats */}
               {!isFullyPaid && (
-                <div style={{ display: 'flex', gap: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '10px', marginTop: '12px' }}>
+                <div style={{ display: 'flex', gap: '8px', borderTop: '1px solid #F1F5F9', paddingTop: '10px', marginTop: '12px' }}>
                   <button
                     className="app-btn app-btn-secondary"
                     onClick={() => onSelectFlatPayment(flat.flatNo, flat.residentName)}
