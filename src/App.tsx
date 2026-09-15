@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { Building2, Wallet, CreditCard, Calendar, PieChart, Plus, Share2 } from 'lucide-react';
+import { Building2, Wallet, CreditCard, Calendar, PieChart, Share2 } from 'lucide-react';
 import type { AppState, ChandaRecord, ExpenseRecord, PoojaEvent } from './types';
 import {
   loadAppState,
@@ -210,11 +210,7 @@ export const App: React.FC = () => {
     syncToCloudRemote(newState);
   };
 
-  const handleFABClick = () => {
-    if (!isAdmin) return;
-    setActiveTab('expenses');
-    setExpenseModalTrigger((prev) => prev + 1);
-  };
+
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -317,16 +313,7 @@ export const App: React.FC = () => {
 
       </main>
 
-      {/* Floating Action Button (FAB) for Mobile - Visible ONLY for Admin */}
-      {isAdmin && (
-        <button
-          className="fab-btn"
-          onClick={handleFABClick}
-          title="Add Expense Entry"
-        >
-          <Plus size={28} />
-        </button>
-      )}
+
 
       {/* Mobile Bottom Navigation Bar */}
       <div className="bottom-nav">
