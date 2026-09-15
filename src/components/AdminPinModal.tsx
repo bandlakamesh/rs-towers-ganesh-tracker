@@ -5,7 +5,7 @@ import type { FlatStatus } from '../types';
 interface AdminPinModalProps {
   onClose: () => void;
   isAdmin: boolean;
-  onAdminLoginSuccess: () => void;
+  onAdminLoginSuccess: (flatNo: string) => void;
   onAdminLogout: () => void;
   flatsList?: FlatStatus[];
   adminFlats?: string[];
@@ -23,9 +23,8 @@ export const AdminPinModal: React.FC<AdminPinModalProps> = ({
   rootFlat = '302',
   onToggleFlatAdmin,
 }) => {
-  const [pinInput, setPinInput] = useState('');
   const [selectedFlat, setSelectedFlat] = useState<string>('302');
-  const [loginMethod, setLoginMethod] = useState<'pin' | 'flat'>('flat');
+  const [pinInput, setPinInput] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
@@ -44,26 +43,28 @@ export const AdminPinModal: React.FC<AdminPinModalProps> = ({
     e.preventDefault();
     setErrorMsg('');
 
-    if (loginMethod === 'flat') {
-      // Check if selected flat has admin access granted by Root
-      if (adminFlats.includes(selectedFlat) || selectedFlat === rootFlat) {
-        onAdminLoginSuccess();
-        onClose();
-        return;
-      } else {
-        setErrorMsg(`❌ Flat #${selectedFlat} does not have Admin rights. Please enter the Admin PIN or ask Root User (Flat 302 - Kamesh) to grant access.`);
-        return;
-      }
+    const storedPin = getStoredPin();
+
+    // STEP 1: Strictly verify Security PIN
+    if (pinInput.trim() !== storedPin) {
+      setErrorMsg('❌ Incorrect Security PIN. Access denied.');
+      return;
     }
 
-    const storedPin = getStoredPin();
-    if (pinInput.trim() === storedPin) {
-      onAdminLoginSuccess();
-      setPinInput('');
-      onClose();
-    } else {
-      setErrorMsg('❌ Incorrect Admin PIN. Default PIN is 2026.');
+    // STEP 2: Check if selected flat has Admin rights
+    const isRoot = selectedFlat === rootFlat;
+    const hasAdminRights = adminFlats.includes(selectedFlat) || isRoot;
+
+    if (!hasAdminRights) {
+      setErrorMsg(`❌ Flat #${selectedFlat} has not been granted Admin access by Root User (Flat 302 - Kamesh).`);
+      return;
     }
+
+    // Success
+    onAdminLoginSuccess(selectedFlat);
+    setPinInput('');
+    setErrorMsg('');
+    onClose();
   };
 
   const handleChangePinSubmit = (e: React.FormEvent) => {
@@ -83,7 +84,7 @@ export const AdminPinModal: React.FC<AdminPinModalProps> = ({
     }
 
     localStorage.setItem('rs_towers_admin_pin', newPinInput.trim());
-    setSuccessMsg('✅ Admin PIN updated successfully!');
+    setSuccessMsg('✅ Admin Security PIN updated successfully!');
     setCurrentPinInput('');
     setNewPinInput('');
     setAdminTab('overview');
@@ -94,7 +95,7 @@ export const AdminPinModal: React.FC<AdminPinModalProps> = ({
       <div
         className="modal-container"
         onClick={(e) => e.stopPropagation()}
-        style={{ maxWidth: '580px', padding: '24px', maxHeight: '90vh', overflowY: 'auto' }}
+        style={{ maxWidth: '560px', padding: '24px', maxHeight: '90vh', overflowY: 'auto' }}
       >
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px', borderBottom: '1px solid #E2E8F0', paddingBottom: '14px' }}>
@@ -115,10 +116,10 @@ export const AdminPinModal: React.FC<AdminPinModalProps> = ({
             </div>
             <div>
               <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 800, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                {isAdmin ? '🔓 Admin Mode Active' : '🔑 Admin Security & Role Unlock'}
+                {isAdmin ? '🔓 Admin Mode Active' : '🔑 Admin Authentication'}
               </h3>
               <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                {isAdmin ? 'Manage flat permissions, change PIN, or lock session' : 'Root User: Flat 302 - Kamesh • Admin PIN default: 2026'}
+                {isAdmin ? 'Manage flat permissions, change PIN, or lock session' : 'PIN required to authenticate flat owner identity'}
               </p>
             </div>
           </div>
@@ -142,7 +143,7 @@ export const AdminPinModal: React.FC<AdminPinModalProps> = ({
           </button>
         </div>
 
-        {/* Status Alert */}
+        {/* Status Alerts */}
         {errorMsg && (
           <div style={{ padding: '10px 14px', borderRadius: '8px', background: '#FEF2F2', color: '#DC2626', border: '1px solid #FECACA', fontSize: '0.84rem', fontWeight: 600, marginBottom: '16px' }}>
             {errorMsg}
@@ -155,104 +156,57 @@ export const AdminPinModal: React.FC<AdminPinModalProps> = ({
           </div>
         )}
 
-        {/* State 1: Locked (Prompt PIN or Flat Selection) */}
+        {/* State 1: Locked (Prompt Flat & PIN) */}
         {!isAdmin && (
           <form onSubmit={handleLoginSubmit}>
-            
-            {/* Toggle Login Method */}
-            <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', background: '#F1F5F9', padding: '4px', borderRadius: '10px' }}>
-              <button
-                type="button"
-                onClick={() => setLoginMethod('flat')}
-                style={{
-                  flex: 1,
-                  padding: '8px',
-                  borderRadius: '8px',
-                  border: 'none',
-                  background: loginMethod === 'flat' ? '#FFFFFF' : 'transparent',
-                  color: loginMethod === 'flat' ? '#1D4ED8' : '#64748B',
-                  fontWeight: loginMethod === 'flat' ? 700 : 500,
-                  boxShadow: loginMethod === 'flat' ? '0 2px 6px rgba(0,0,0,0.08)' : 'none',
-                  cursor: 'pointer',
-                  fontSize: '0.82rem',
-                }}
+            <div className="form-group" style={{ marginBottom: '14px' }}>
+              <label style={{ fontWeight: 600, fontSize: '0.85rem', color: '#334155', marginBottom: '6px', display: 'block' }}>
+                1. Select Flat Number:
+              </label>
+              <select
+                className="form-control"
+                value={selectedFlat}
+                onChange={(e) => setSelectedFlat(e.target.value)}
+                style={{ fontSize: '0.96rem', padding: '10px' }}
               >
-                🏢 Unlock by Flat Number
-              </button>
+                {flatsList.map((f) => {
+                  const isRoot = f.flatNo === rootFlat;
+                  const hasAdmin = adminFlats.includes(f.flatNo) || isRoot;
 
-              <button
-                type="button"
-                onClick={() => setLoginMethod('pin')}
-                style={{
-                  flex: 1,
-                  padding: '8px',
-                  borderRadius: '8px',
-                  border: 'none',
-                  background: loginMethod === 'pin' ? '#FFFFFF' : 'transparent',
-                  color: loginMethod === 'pin' ? '#1D4ED8' : '#64748B',
-                  fontWeight: loginMethod === 'pin' ? 700 : 500,
-                  boxShadow: loginMethod === 'pin' ? '0 2px 6px rgba(0,0,0,0.08)' : 'none',
-                  cursor: 'pointer',
-                  fontSize: '0.82rem',
-                }}
-              >
-                🔢 Unlock by Admin PIN
-              </button>
+                  return (
+                    <option key={f.flatNo} value={f.flatNo}>
+                      Flat #{f.flatNo} - {f.residentName} {isRoot ? '👑 (Root Admin)' : hasAdmin ? '⭐ (Admin)' : '👤 (Resident/Tenant)'}
+                    </option>
+                  );
+                })}
+              </select>
             </div>
 
-            {loginMethod === 'flat' ? (
-              <div className="form-group">
-                <label style={{ fontWeight: 600, fontSize: '0.85rem', color: '#334155', marginBottom: '8px', display: 'block' }}>
-                  Select Your Flat #:
-                </label>
-                <select
-                  className="form-control"
-                  value={selectedFlat}
-                  onChange={(e) => setSelectedFlat(e.target.value)}
-                  style={{ fontSize: '1rem', padding: '10px' }}
-                >
-                  {flatsList.map((f) => {
-                    const isRoot = f.flatNo === rootFlat;
-                    const hasAdmin = adminFlats.includes(f.flatNo) || isRoot;
-
-                    return (
-                      <option key={f.flatNo} value={f.flatNo}>
-                        Flat #{f.flatNo} - {f.residentName} {isRoot ? '👑 (Root User)' : hasAdmin ? '⭐ (Admin)' : '👤 (Resident/Tenant)'}
-                      </option>
-                    );
-                  })}
-                </select>
-                <p style={{ fontSize: '0.76rem', color: '#64748B', marginTop: '8px' }}>
-                  👑 <strong>Flat #302 (Kamesh)</strong> is Root User. Root User can grant Admin access to other flat owners or revoke it.
-                </p>
-              </div>
-            ) : (
-              <div className="form-group">
-                <label style={{ fontWeight: 600, fontSize: '0.85rem', color: '#334155', marginBottom: '8px', display: 'block' }}>
-                  Enter Admin PIN:
-                </label>
-                <input
-                  type="password"
-                  className="form-control"
-                  value={pinInput}
-                  onChange={(e) => setPinInput(e.target.value)}
-                  placeholder="Enter PIN (Default: 2026)"
-                  autoFocus
-                  required
-                  style={{ fontSize: '1.1rem', letterSpacing: '4px', textAlign: 'center', padding: '12px' }}
-                />
-                <p style={{ fontSize: '0.76rem', color: '#64748B', marginTop: '6px' }}>
-                  💡 Default Admin PIN: <strong>2026</strong>.
-                </p>
-              </div>
-            )}
+            <div className="form-group" style={{ marginBottom: '14px' }}>
+              <label style={{ fontWeight: 600, fontSize: '0.85rem', color: '#334155', marginBottom: '6px', display: 'block' }}>
+                2. Enter Security PIN:
+              </label>
+              <input
+                type="password"
+                className="form-control"
+                value={pinInput}
+                onChange={(e) => setPinInput(e.target.value)}
+                placeholder="Enter Admin PIN (Default: 2026)"
+                autoFocus
+                required
+                style={{ fontSize: '1.1rem', letterSpacing: '4px', textAlign: 'center', padding: '12px' }}
+              />
+              <p style={{ fontSize: '0.76rem', color: '#64748B', marginTop: '6px' }}>
+                🔐 <strong>Authentication Rule:</strong> Both a valid Security PIN (Default: <code>2026</code>) and granted Admin rights for the selected flat are required to unlock editing.
+              </p>
+            </div>
 
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end', marginTop: '20px' }}>
               <button type="button" className="app-btn app-btn-secondary" onClick={onClose}>
                 Cancel
               </button>
               <button type="submit" className="app-btn app-btn-primary">
-                <ShieldCheck size={18} /> Unlock Admin Mode
+                <ShieldCheck size={18} /> Authenticate & Unlock
               </button>
             </div>
           </form>
@@ -261,7 +215,6 @@ export const AdminPinModal: React.FC<AdminPinModalProps> = ({
         {/* State 2: Unlocked (Active Admin Session) */}
         {isAdmin && (
           <div>
-            
             {/* Sub-navigation Tabs */}
             <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', borderBottom: '1px solid #E2E8F0', paddingBottom: '10px' }}>
               <button
@@ -296,7 +249,7 @@ export const AdminPinModal: React.FC<AdminPinModalProps> = ({
             {adminTab === 'overview' && (
               <div>
                 <div style={{ padding: '14px', borderRadius: '12px', background: '#F0F9FF', border: '1px solid #B2D8E5', marginBottom: '20px', fontSize: '0.86rem', color: '#0077B6' }}>
-                  ✓ <strong>Admin Privileges Unlocked:</strong> You can record donations, log expenses with bill photos, edit schedule events, and send WhatsApp reminders.
+                  ✓ <strong>Admin Session Active:</strong> You can record donations, log expenses with bill photos, edit schedule events, and send WhatsApp reminders.
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -306,7 +259,7 @@ export const AdminPinModal: React.FC<AdminPinModalProps> = ({
                     onClick={() => setAdminTab('manage_rights')}
                     style={{ width: '100%', justifyContent: 'center', background: '#FFFBEB', color: '#B45309', border: '1px solid #FDE68A' }}
                   >
-                    <Crown size={16} /> 👑 Manage Admin Access for Flats (Root Control)
+                    <Crown size={16} /> 👑 Manage Flat Admin Permissions (Root User Kamesh)
                   </button>
 
                   <button
@@ -318,7 +271,7 @@ export const AdminPinModal: React.FC<AdminPinModalProps> = ({
                     }}
                     style={{ width: '100%', justifyContent: 'center', background: '#FEF2F2', color: '#DC2626', border: '1px solid #FECACA' }}
                   >
-                    <Lock size={16} /> Lock / Admin Logout
+                    <Lock size={16} /> Lock / Logout Admin
                   </button>
                 </div>
               </div>
@@ -328,7 +281,7 @@ export const AdminPinModal: React.FC<AdminPinModalProps> = ({
             {adminTab === 'manage_rights' && (
               <div>
                 <div style={{ padding: '12px', borderRadius: '10px', background: '#FFFBEB', border: '1px solid #FDE68A', marginBottom: '14px', fontSize: '0.82rem', color: '#92400E' }}>
-                  👑 <strong>Root User Controls (Flat 302 - Kamesh):</strong> Grant or revoke Admin editing rights for each flat. Flat owners with Admin access can log payments & expenses. Tenants / normal flats receive read-only access.
+                  👑 <strong>Root Controls (Flat 302 - Kamesh):</strong> Grant or revoke Admin editing rights for each flat. Flat owners with Admin access can log payments & expenses. Tenants / normal flats receive read-only access.
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '340px', overflowY: 'auto', paddingRight: '4px' }}>
@@ -409,14 +362,14 @@ export const AdminPinModal: React.FC<AdminPinModalProps> = ({
             {adminTab === 'change_pin' && (
               <form onSubmit={handleChangePinSubmit}>
                 <div className="form-group">
-                  <label style={{ fontSize: '0.84rem', fontWeight: 600 }}>Current PIN:</label>
+                  <label style={{ fontSize: '0.84rem', fontWeight: 600 }}>Current Security PIN:</label>
                   <input
                     type="password"
                     className="form-control"
                     value={currentPinInput}
                     onChange={(e) => setCurrentPinInput(e.target.value)}
                     required
-                    placeholder="Enter Current PIN (Default: 2026)"
+                    placeholder="Enter Current Security PIN"
                   />
                 </div>
 
@@ -428,7 +381,7 @@ export const AdminPinModal: React.FC<AdminPinModalProps> = ({
                     value={newPinInput}
                     onChange={(e) => setNewPinInput(e.target.value)}
                     required
-                    placeholder="Enter New PIN (min 4 chars)"
+                    placeholder="Enter New Security PIN (min 4 chars)"
                   />
                 </div>
 
@@ -437,7 +390,7 @@ export const AdminPinModal: React.FC<AdminPinModalProps> = ({
                     Cancel
                   </button>
                   <button type="submit" className="app-btn app-btn-primary">
-                    <Check size={16} /> Save New PIN
+                    <Check size={16} /> Save New Security PIN
                   </button>
                 </div>
               </form>
