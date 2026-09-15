@@ -2,10 +2,38 @@ import type { AppState } from '../types';
 import { INITIAL_APP_STATE } from '../data/initialData';
 
 const LOCAL_STORAGE_KEY = 'rs_towers_ganesh_utsav_v1';
+const FIREBASE_URL_KEY = 'rs_towers_firebase_url';
 
-// Public Realtime Cloud Key & Store API (Free multi-user real-time endpoint for RS Towers)
-const PUBLIC_CLOUD_ENDPOINT = 'https://api.jsonbin.io/v3/b/66e60b1fe41b4d34e430b50a';
-const MASTER_KEY = '$2a$10$89.v91v9v91v9v91v9v91v9';
+// Default Firebase Realtime Database REST Endpoint
+const DEFAULT_FIREBASE_DB_URL = 'https://rs-towers-ganesh-utsav-2026-default-rtdb.firebaseio.com/state.json';
+
+export const getFirebaseDbUrl = (): string => {
+  if (typeof window !== 'undefined') {
+    const customUrl = localStorage.getItem(FIREBASE_URL_KEY);
+    if (customUrl && customUrl.trim()) {
+      let url = customUrl.trim();
+      if (!url.endsWith('/state.json')) {
+        url = url.replace(/\/+$/, '') + '/state.json';
+      }
+      return url;
+    }
+  }
+  return DEFAULT_FIREBASE_DB_URL;
+};
+
+export const setFirebaseDbUrl = (url: string): void => {
+  if (typeof window !== 'undefined') {
+    if (url && url.trim()) {
+      let formatted = url.trim();
+      if (!formatted.endsWith('/state.json')) {
+        formatted = formatted.replace(/\/+$/, '') + '/state.json';
+      }
+      localStorage.setItem(FIREBASE_URL_KEY, formatted);
+    } else {
+      localStorage.removeItem(FIREBASE_URL_KEY);
+    }
+  }
+};
 
 export const loadAppState = (): AppState => {
   try {
@@ -33,40 +61,40 @@ export const saveAppState = (state: AppState): void => {
   }
 };
 
-// Fetch live state from cloud database (Called automatically every few seconds)
+// Fetch live state from Firebase Realtime Cloud database
 export const fetchLatestCloudState = async (): Promise<AppState | null> => {
   try {
     const localState = loadAppState();
-    const res = await fetch(`${PUBLIC_CLOUD_ENDPOINT}/latest`, {
-      headers: {
-        'X-Master-Key': MASTER_KEY,
-      },
-    });
+    const endpoint = getFirebaseDbUrl();
+    const res = await fetch(endpoint);
 
     if (res.ok) {
       const json = await res.json();
-      if (json.record && Array.isArray(json.record.chandaList) && Array.isArray(json.record.expenseList)) {
-        const cloudState = syncFlatsWithChanda(json.record);
+      if (json && Array.isArray(json.chandaList) && Array.isArray(json.expenseList)) {
+        const cloudState = syncFlatsWithChanda(json);
         const localLastUpdated = localState?.lastUpdated || 0;
         const cloudLastUpdated = cloudState.lastUpdated || 0;
 
-        // ONLY adopt cloud state if it is strictly NEWER than local state!
-        if (cloudLastUpdated > localLastUpdated) {
+        // Adopt cloud state if cloud timestamp is newer OR local has fewer expenses than cloud
+        const localExpensesCount = localState?.expenseList?.length || 0;
+        const cloudExpensesCount = cloudState?.expenseList?.length || 0;
+
+        if (cloudLastUpdated > localLastUpdated || cloudExpensesCount > localExpensesCount) {
           saveAppState(cloudState);
           return cloudState;
-        } else if (localLastUpdated > cloudLastUpdated) {
-          // Local state is newer! Sync local state back up to cloud
+        } else if (localLastUpdated > cloudLastUpdated && localExpensesCount >= cloudExpensesCount) {
+          // Local state is newer! Sync local state back up to cloud database
           syncToCloudRemote(localState);
         }
       }
     }
   } catch (err) {
-    console.warn('Realtime cloud sync fetch warning:', err);
+    console.warn('Realtime Firebase cloud sync fetch warning:', err);
   }
   return null;
 };
 
-// Push live state update to cloud database (Called instantly whenever any user adds an expense or chanda)
+// Push live state update to Firebase Realtime Cloud database
 export const syncToCloudRemote = async (state: AppState): Promise<boolean> => {
   saveAppState(state);
   
@@ -77,18 +105,18 @@ export const syncToCloudRemote = async (state: AppState): Promise<boolean> => {
       channel.postMessage({ type: 'STATE_UPDATE', state });
     }
 
-    const res = await fetch(PUBLIC_CLOUD_ENDPOINT, {
+    const endpoint = getFirebaseDbUrl();
+    const res = await fetch(endpoint, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'X-Master-Key': MASTER_KEY,
       },
       body: JSON.stringify(state),
     });
 
     return res.ok;
   } catch (err) {
-    console.warn('Realtime cloud sync push error:', err);
+    console.warn('Realtime Firebase cloud sync push error:', err);
     return false;
   }
 };

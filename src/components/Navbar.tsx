@@ -1,7 +1,8 @@
-import React, { useRef } from 'react';
-import { Share2, Download, Upload, Printer } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import { Share2, Download, Upload, Printer, Server } from 'lucide-react';
 import type { AppState } from '../types';
 import { exportAppStateJSON, importAppStateJSON } from '../utils/cloudStorage';
+import { FirebaseConfigModal } from './FirebaseConfigModal';
 
 interface NavbarProps {
   state: AppState;
@@ -15,6 +16,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenWhatsAppModal,
 }) => {
   const jsonInputRef = useRef<HTMLInputElement>(null);
+  const [isFirebaseModalOpen, setIsFirebaseModalOpen] = useState(false);
 
   const handleExport = () => {
     exportAppStateJSON(state);
@@ -77,6 +79,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Printer size={16} /> Print / Download PDF
           </button>
 
+          <button className="app-btn app-btn-secondary" onClick={() => setIsFirebaseModalOpen(true)} style={{ padding: '8px 12px', fontSize: '0.84rem' }} title="Firebase Cloud DB Settings">
+            <Server size={16} />
+          </button>
+
           <button className="app-btn app-btn-secondary" onClick={handleExport} style={{ padding: '8px 12px', fontSize: '0.84rem' }} title="Download JSON Backup">
             <Download size={16} />
           </button>
@@ -96,6 +102,13 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
       </div>
+
+      {isFirebaseModalOpen && (
+        <FirebaseConfigModal
+          onClose={() => setIsFirebaseModalOpen(false)}
+          onStateSynced={onStateUpdate}
+        />
+      )}
     </header>
   );
 };
