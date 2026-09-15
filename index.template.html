@@ -9,18 +9,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>R.S Towers Ganesh Utsav 2026</title>
     <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(function(registrations) {
-          for (var registration of registrations) {
-            registration.unregister();
+      (function() {
+        var CURRENT_BUILD = '2026_09_15_v10';
+        var lastBuild = localStorage.getItem('rs_app_version_build');
+        if (lastBuild !== CURRENT_BUILD) {
+          localStorage.setItem('rs_app_version_build', CURRENT_BUILD);
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(regs) {
+              for (var r of regs) r.unregister();
+            });
           }
-        });
-      }
-      if ('caches' in window) {
-        caches.keys().then(function(names) {
-          for (var name of names) caches.delete(name);
-        });
-      }
+          if ('caches' in window) {
+            caches.keys().then(function(names) {
+              for (var name of names) caches.delete(name);
+            });
+          }
+          if (lastBuild) {
+            window.location.reload();
+          }
+        }
+      })();
     </script>
   </head>
   <body>
