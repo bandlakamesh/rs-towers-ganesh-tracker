@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Pencil, Receipt, Search, Eye, ArrowUpDown, ArrowUp, ArrowDown, Printer } from 'lucide-react';
+import { Plus, Trash2, Pencil, Receipt, Search, Eye, ArrowUpDown, ArrowUp, ArrowDown, Printer, User, DollarSign } from 'lucide-react';
 import type { ExpenseRecord, ExpenseCategory, PaymentMode } from '../types';
 
 interface ExpenseLogProps {
@@ -35,6 +35,7 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
   const [selectedBillImage, setSelectedBillImage] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('All');
+  const [selectedMemberFilter, setSelectedMemberFilter] = useState<string>('All');
 
   // Sorting state
   const [sortField, setSortField] = useState<SortField>('date');
@@ -54,6 +55,25 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
       handleOpenAdd();
     }
   }, [openAddModalTrigger]);
+
+  // Aggregate total expenses paid per member/person
+  const memberTotalsMap: Record<string, { totalAmount: number; count: number }> = {};
+  expenseList.forEach((e) => {
+    const person = e.paidBy.trim() || 'Unknown';
+    if (!memberTotalsMap[person]) {
+      memberTotalsMap[person] = { totalAmount: 0, count: 0 };
+    }
+    memberTotalsMap[person].totalAmount += e.amount;
+    memberTotalsMap[person].count += 1;
+  });
+
+  const memberTotalsList = Object.entries(memberTotalsMap)
+    .map(([person, data]) => ({
+      person,
+      totalAmount: data.totalAmount,
+      count: data.count,
+    }))
+    .sort((a, b) => b.totalAmount - a.totalAmount);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -141,7 +161,9 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
       e.category.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesCategory = categoryFilter === 'All' ? true : e.category === categoryFilter;
-    return matchesSearch && matchesCategory;
+    const matchesMember = selectedMemberFilter === 'All' ? true : e.paidBy === selectedMemberFilter;
+
+    return matchesSearch && matchesCategory && matchesMember;
   });
 
   const sortedList = [...filteredList].sort((a, b) => {
@@ -216,6 +238,61 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
         </div>
       </div>
 
+      {/* Member-wise Total Expense Paid Summary Cards */}
+      <div style={{ marginBottom: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+          <h3 style={{ fontSize: '1rem', margin: 0, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <User size={16} style={{ color: '#2563EB' }} /> Member-wise Total Expense Paid Summary
+          </h3>
+          {selectedMemberFilter !== 'All' && (
+            <button
+              onClick={() => setSelectedMemberFilter('All')}
+              style={{ background: '#EFF6FF', border: '1px solid #93C5FD', color: '#1D4ED8', padding: '3px 8px', borderRadius: '6px', fontSize: '0.75rem', cursor: 'pointer', fontWeight: 600 }}
+            >
+              Clear Member Filter (Show All)
+            </button>
+          )}
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '12px' }}>
+          {memberTotalsList.map((m) => {
+            const isSelected = selectedMemberFilter === m.person;
+
+            return (
+              <div
+                key={m.person}
+                onClick={() => setSelectedMemberFilter(isSelected ? 'All' : m.person)}
+                className="app-card"
+                style={{
+                  padding: '14px',
+                  cursor: 'pointer',
+                  border: isSelected ? '2px solid #2563EB' : '1px solid #E2E8F0',
+                  background: isSelected ? '#EFF6FF' : '#FFFFFF',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#0F172A', marginBottom: '4px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <User size={13} color="#2563EB" /> {m.person}
+                  </span>
+                  <span style={{ fontSize: '0.7rem', color: '#64748B', background: '#F1F5F9', padding: '1px 6px', borderRadius: '4px' }}>
+                    {m.count} item{m.count > 1 ? 's' : ''}
+                  </span>
+                </div>
+
+                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#DC2626', display: 'flex', alignItems: 'center', gap: '2px' }}>
+                  <DollarSign size={15} color="#DC2626" /> ₹{m.totalAmount.toLocaleString('en-IN')}
+                </div>
+
+                <div style={{ fontSize: '0.72rem', color: isSelected ? '#1D4ED8' : '#64748B', marginTop: '2px' }}>
+                  {isSelected ? '✓ Showing expenses for this member' : 'Click to filter expenses table'}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Expense Cards / Table */}
       <div className="app-card" style={{ overflowX: 'auto', padding: 0 }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
@@ -255,7 +332,15 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
                 <td style={{ padding: '12px 16px', fontWeight: 700, color: '#DC2626' }}>
                   ₹{e.amount.toLocaleString('en-IN')}
                 </td>
-                <td style={{ padding: '12px 16px', color: '#1D4ED8', fontWeight: 600 }}>{e.paidBy}</td>
+                <td style={{ padding: '12px 16px', color: '#1D4ED8', fontWeight: 600 }}>
+                  <span
+                    onClick={() => setSelectedMemberFilter(selectedMemberFilter === e.paidBy ? 'All' : e.paidBy)}
+                    style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                    title="Click to filter by this member"
+                  >
+                    {e.paidBy}
+                  </span>
+                </td>
                 <td style={{ padding: '12px 16px' }}>
                   <span style={{ background: '#EFF6FF', color: '#1D4ED8', padding: '3px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
                     {e.paymentMode}
