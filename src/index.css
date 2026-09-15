@@ -454,13 +454,13 @@ h1, h2, h3, h4, h5, h6 {
   }
   .hero-banner-artwork {
     width: 100% !important;
-    max-width: 320px !important;
-    height: auto !important;
-    aspect-ratio: 1.85 / 1 !important;
+    max-width: 280px !important;
+    height: 120px !important;
     margin: 0 auto !important;
   }
   .hero-banner-artwork img {
-    object-fit: contain !important;
+    object-fit: cover !important;
+    object-position: center 25% !important;
   }
   .header-actions-row {
     width: auto !important;
