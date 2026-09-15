@@ -22,7 +22,6 @@ export const App: React.FC = () => {
 
   // Modals state
   const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
-  const [prefillFlatPayment, setPrefillFlatPayment] = useState<{ flatNo: string; residentName: string } | null>(null);
   const [expenseModalTrigger, setExpenseModalTrigger] = useState(0);
 
   // Auto-fetch latest cloud data on mount & set up 10-second live polling sync
