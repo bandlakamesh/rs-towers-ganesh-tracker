@@ -57,6 +57,24 @@ Thank you for your valuable support! 🙏
 - RS Towers Ganesh Utsav Committee`;
 };
 
+export const generateWhatsAppEventReminderText = (event: { title: string; date: string; time: string; location: string; coordinator: string; phone: string; description: string }): string => {
+  return `🪔 *R.S TOWERS GANESH UTSAV 2026 - EVENT REMINDER* 🪔
+
+🚩 *${event.title}*
+
+📅 *Date & Time*: ${event.date} • ${event.time}
+📍 *Venue*: ${event.location}
+👤 *Coordinator*: ${event.coordinator} (${event.phone})
+
+📝 *Details*: ${event.description}
+
+🙏 All RS Towers residents & family members are cordially invited!
+Ganpati Bappa Morya! 🌺
+
+🔗 *Live Festival Dashboard & Schedule*:
+${GITHUB_PAGES_LIVE_URL}`;
+};
+
 export const openWhatsAppShareLink = (text: string): void => {
   const encoded = encodeURIComponent(text);
   window.open(`https://api.whatsapp.com/send?text=${encoded}`, '_blank');
