@@ -23,6 +23,50 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({
   return (
     <div style={{ marginBottom: '24px' }}>
       
+      {/* Sleek Modern Lord Ganesha Hero Banner */}
+      <div
+        className="app-card no-print"
+        style={{
+          padding: '24px',
+          marginBottom: '20px',
+          background: 'linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 50%, #FFEDD5 100%)',
+          border: '1px solid #FCD34D',
+          borderRadius: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '20px',
+          position: 'relative',
+          overflow: 'hidden',
+          boxShadow: '0 8px 25px -5px rgba(245, 158, 11, 0.2)',
+        }}
+      >
+        <div style={{ flex: 1, zIndex: 2 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#FFFFFF', padding: '4px 12px', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 700, color: '#D97706', marginBottom: '10px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+            🪔 RS Towers Ganesh Utsav 2026
+          </div>
+          <h2 style={{ fontSize: '1.6rem', fontWeight: 800, margin: '0 0 6px 0', color: '#78350F', letterSpacing: '-0.4px' }}>
+            Ganpati Bappa Morya! 🙏
+          </h2>
+          <p style={{ fontSize: '0.88rem', color: '#92400E', margin: 0, maxWidth: '520px', lineHeight: 1.5, fontWeight: 500 }}>
+            Welcome to the official live tracker for RS Towers. Track all 15 flat contributions, daily pandal expenses, and pooja schedules in real-time.
+          </p>
+        </div>
+
+        {/* Hero Artwork Image */}
+        <div style={{ position: 'relative', width: '180px', height: '110px', borderRadius: '14px', overflow: 'hidden', flexShrink: 0, boxShadow: '0 6px 16px rgba(180, 83, 9, 0.25)', border: '2px solid #FDE68A' }}>
+          <img
+            src="./ganesha_banner.png"
+            alt="Ganapathi Utsav"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            onError={(e) => {
+              // Hide if image missing
+              e.currentTarget.parentElement!.style.display = 'none';
+            }}
+          />
+        </div>
+      </div>
+      
       {/* KPI Cards Row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px', marginBottom: '16px' }}>
         

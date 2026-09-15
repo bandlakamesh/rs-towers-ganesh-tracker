@@ -40,29 +40,54 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header className="app-card" style={{ borderRadius: 0, borderTop: 0, borderLeft: 0, borderRight: 0, marginBottom: 0, padding: '14px 20px' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
         
-        {/* Brand Title */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        {/* Brand Title with Ganapathi Badge */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           <div style={{
-            width: '42px',
-            height: '42px',
+            position: 'relative',
+            width: '46px',
+            height: '46px',
             borderRadius: '50%',
-            background: 'var(--saffron-gradient)',
+            background: 'linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%)',
+            border: '2px solid #FDBA74',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '22px',
-            boxShadow: '0 0 12px rgba(245, 158, 11, 0.4)',
+            boxShadow: '0 4px 14px rgba(245, 158, 11, 0.35)',
+            overflow: 'hidden',
           }}>
-            🪔
+            <img
+              src="./ganesha_badge.png"
+              alt="Lord Ganesha"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              onError={(e) => {
+                // Fallback emoji if image loading issue occurs
+                e.currentTarget.style.display = 'none';
+              }}
+            />
+            <span style={{ fontSize: '24px', display: 'none' }}>🪔</span>
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <h1 style={{ fontSize: '1.2rem', margin: 0, letterSpacing: '-0.3px' }}>
-                RS Towers <span style={{ color: 'var(--gold-primary)' }}>Ganesh 2026</span>
+              <h1 style={{ fontSize: '1.25rem', margin: 0, letterSpacing: '-0.3px', fontWeight: 800 }}>
+                RS Towers <span style={{ color: 'var(--gold-primary)', background: 'linear-gradient(135deg, #D97706 0%, #EA580C 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Ganesh 2026</span>
               </h1>
+              <span style={{
+                fontSize: '0.68rem',
+                fontWeight: 700,
+                padding: '2px 8px',
+                borderRadius: '12px',
+                background: '#ECFDF5',
+                color: '#047857',
+                border: '1px solid #A7F3D0',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+              }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10B981', display: 'inline-block' }}></span> Live 24/7
+              </span>
             </div>
-            <p style={{ fontSize: '0.76rem', color: 'var(--text-secondary)', margin: 0 }}>
-              Live Expense & Donation Tracker
+            <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', margin: 0, fontWeight: 500 }}>
+              Live Expense & Donation Tracker • RS Towers Apartment
             </p>
           </div>
         </div>
