@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { Building2, Receipt, Calendar, PieChart, Radio, Plus, Share2 } from 'lucide-react';
+import { Building2, Receipt, Calendar, PieChart, Plus, Share2 } from 'lucide-react';
 import type { AppState, ChandaRecord, ExpenseRecord } from './types';
 import {
   loadAppState,
@@ -15,7 +15,6 @@ import { FlatDirectory } from './components/FlatDirectory';
 import { ChandaLog } from './components/ChandaLog';
 import { ExpenseLog } from './components/ExpenseLog';
 import { WhatsAppShareModal } from './components/WhatsAppShareModal';
-import { GitHubDeployModal } from './components/GitHubDeployModal';
 import { EventTimeline } from './components/EventTimeline';
 import { AnalyticsCharts } from './components/AnalyticsCharts';
 import { GITHUB_PAGES_LIVE_URL } from './utils/whatsappFormatter';
@@ -23,24 +22,21 @@ import { GITHUB_PAGES_LIVE_URL } from './utils/whatsappFormatter';
 export const App: React.FC = () => {
   const [appState, setAppState] = useState<AppState>(() => loadAppState());
   const [activeTab, setActiveTab] = useState<'dashboard' | 'chanda' | 'expenses' | 'schedule' | 'analytics'>('dashboard');
-  const [isCloudSyncing, setIsCloudSyncing] = useState(false);
 
   // Modals state
   const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
-  const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
   const [prefillFlatPayment, setPrefillFlatPayment] = useState<{ flatNo: string; residentName: string } | null>(null);
+  const [expenseModalTrigger, setExpenseModalTrigger] = useState(0);
 
   // Auto-fetch latest cloud data on mount & set up 10-second live polling sync
   useEffect(() => {
     let isMounted = true;
 
     const pullLiveCloudData = async () => {
-      setIsCloudSyncing(true);
       const cloudData = await fetchLatestCloudState();
       if (isMounted && cloudData) {
         setAppState(cloudData);
       }
-      setIsCloudSyncing(false);
     };
 
     pullLiveCloudData();
@@ -145,6 +141,11 @@ export const App: React.FC = () => {
     }
   };
 
+  const handleFABClick = () => {
+    setActiveTab('expenses');
+    setExpenseModalTrigger((prev) => prev + 1);
+  };
+
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       
@@ -153,17 +154,7 @@ export const App: React.FC = () => {
         state={appState}
         onStateUpdate={handleStateUpdate}
         onOpenWhatsAppModal={() => setIsWhatsAppModalOpen(true)}
-        onOpenDeployModal={() => setIsDeployModalOpen(true)}
       />
-
-      {/* Realtime Live Cloud Sync Indicator */}
-      <div style={{ background: '#ECFDF5', borderBottom: '1px solid #A7F3D0', padding: '6px 16px', textAlign: 'center', fontSize: '0.78rem', color: '#059669', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-        <Radio size={13} style={{ animation: 'pulse 1.5s infinite' }} />
-        <span>
-          <strong>Live Multi-User Cloud Sync Active</strong>
-          {isCloudSyncing && <span style={{ opacity: 0.7, marginLeft: '6px' }}>(Syncing...)</span>}
-        </span>
-      </div>
 
       {/* Main App Container */}
       <main style={{ maxWidth: '1200px', width: '100%', margin: '0 auto', padding: '16px 16px 0 16px', flex: 1 }}>
@@ -212,7 +203,10 @@ export const App: React.FC = () => {
             <DashboardStats
               state={appState}
               onOpenAddChanda={() => setActiveTab('chanda')}
-              onOpenAddExpense={() => setActiveTab('expenses')}
+              onOpenAddExpense={() => {
+                setActiveTab('expenses');
+                setExpenseModalTrigger((prev) => prev + 1);
+              }}
             />
 
             <FlatDirectory
@@ -239,6 +233,7 @@ export const App: React.FC = () => {
             expenseList={appState.expenseList}
             onAddExpense={handleAddExpense}
             onDeleteExpense={handleDeleteExpense}
+            openAddModalTrigger={expenseModalTrigger}
           />
         )}
 
@@ -254,11 +249,11 @@ export const App: React.FC = () => {
 
       </main>
 
-      {/* Floating Action Button (FAB) for Mobile */}
+      {/* Floating Action Button (FAB) for Mobile - Opens Add Expense Modal */}
       <button
         className="fab-btn"
-        onClick={() => setActiveTab(activeTab === 'expenses' ? 'expenses' : 'chanda')}
-        title="Add Entry"
+        onClick={handleFABClick}
+        title="Add Expense Entry"
       >
         <Plus size={28} />
       </button>
@@ -330,12 +325,6 @@ export const App: React.FC = () => {
         <WhatsAppShareModal
           state={appState}
           onClose={() => setIsWhatsAppModalOpen(false)}
-        />
-      )}
-
-      {isDeployModalOpen && (
-        <GitHubDeployModal
-          onClose={() => setIsDeployModalOpen(false)}
         />
       )}
 

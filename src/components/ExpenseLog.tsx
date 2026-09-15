@@ -6,6 +6,7 @@ interface ExpenseLogProps {
   expenseList: ExpenseRecord[];
   onAddExpense: (expense: Omit<ExpenseRecord, 'id' | 'createdAt'>) => void;
   onDeleteExpense: (id: string) => void;
+  openAddModalTrigger?: number;
 }
 
 const CATEGORIES: ExpenseCategory[] = [
@@ -23,8 +24,15 @@ export const ExpenseLog: React.FC<ExpenseLogProps> = ({
   expenseList,
   onAddExpense,
   onDeleteExpense,
+  openAddModalTrigger,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  React.useEffect(() => {
+    if (openAddModalTrigger && openAddModalTrigger > 0) {
+      setIsModalOpen(true);
+    }
+  }, [openAddModalTrigger]);
   const [selectedBillImage, setSelectedBillImage] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('All');

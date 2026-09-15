@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Share2, Download, Upload, Globe, FileSpreadsheet } from 'lucide-react';
+import { Share2, Download, Upload, FileSpreadsheet } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import type { AppState, ChandaRecord, ExpenseRecord } from '../types';
 import { exportAppStateJSON, importAppStateJSON, syncToCloudRemote, syncFlatsWithChanda } from '../utils/cloudStorage';
@@ -8,14 +8,12 @@ interface NavbarProps {
   state: AppState;
   onStateUpdate: (newState: AppState) => void;
   onOpenWhatsAppModal: () => void;
-  onOpenDeployModal: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   state,
   onStateUpdate,
   onOpenWhatsAppModal,
-  onOpenDeployModal,
 }) => {
   const jsonInputRef = useRef<HTMLInputElement>(null);
   const excelInputRef = useRef<HTMLInputElement>(null);
@@ -148,10 +146,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button className="app-btn app-btn-primary" onClick={() => excelInputRef.current?.click()} style={{ background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)', color: '#FFF', padding: '8px 14px', fontSize: '0.84rem' }}>
             <FileSpreadsheet size={16} /> Excel Import
-          </button>
-
-          <button className="app-btn app-btn-secondary" onClick={onOpenDeployModal} style={{ padding: '8px 12px', fontSize: '0.84rem' }} title="Deploy to GitHub">
-            <Globe size={16} /> Deploy
           </button>
 
           <button className="app-btn app-btn-secondary" onClick={handleExport} style={{ padding: '8px 12px', fontSize: '0.84rem' }} title="Download JSON Backup">
